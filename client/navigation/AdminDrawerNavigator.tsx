@@ -5,6 +5,7 @@ import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import HomeDashBoardDrawer from '@/app/Admin/Home/Index';
 
 
 const Drawer = createDrawerNavigator();
@@ -32,7 +33,7 @@ const AdminDrawerNavigator = () => {
             },
           }}
         >
-          <Drawer.Screen name="Home" component={UsuarioDrawer}
+          <Drawer.Screen name="Home" component={HomeDashBoardDrawer}
             options={{
               drawerIcon: ({ color, size }) => <Ionicons name="home" size={30} color={color} className="mr-5" />
             }}
