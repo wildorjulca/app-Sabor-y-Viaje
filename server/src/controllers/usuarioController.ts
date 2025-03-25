@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
-import { usuarioGetAllService } from "../services/usuarioService";
+import { usuarioGetAllService, usuarioPostService } from "../services/usuarioService";
 
 
 
-const addUsurioCTRL = (req: Request, res: Response) => {
-
+const addUsurioCTRL = async (req: Request, res: Response) => {
+    const response = await usuarioPostService(req.body)
+    res.status(response.status).send(response)
 }
 
-const getUsuarioCTRL = async(req:Request, res:Response)=>{
+const getUsuarioCTRL = async (req: Request, res: Response) => {
     const response = await usuarioGetAllService('wildor')
     res.status(response.status).send(response)
 }

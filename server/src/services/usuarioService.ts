@@ -1,13 +1,69 @@
 import sql from 'mssql';
 import { conexion } from '../config/conexon';
+import bcrypt from 'bcrypt'
+
+
+interface UserType {
+    id: number; // Identificador único del usuario
+    name: string; // Nombre del usuario
+    email: string; // Correo electrónico (único)
+    password: string; // Contraseña (encriptada)
+    profilePicture?: string; // URL de la foto de perfil (opcional)
+    bio?: string; // Biografía del usuario (opcional)
+    createdAt?: Date; // Fecha de registro
+    updatedAt?: Date; // Fecha de última actualización
+  }
+  
+
+
+  const usuarioPostService = async (user: UserType) => {
+    const pool = await conexion();
+    try {
+        const passwordHash = bcrypt.hashSync(user.password, 10)
+
+        const result = await pool.request()
+            .input('name', sql.NVarChar, user.name)
+            .input('email', sql.NVarChar, user.email)
+            .input('password', sql.NVarChar, passwordHash)
+            .input('profile_picture', sql.NVarChar, user.profilePicture)
+            .input('bio', sql.NVarChar, user.bio)
+            .execute('POST_PESONA_SAVE_PA');
+
+        // Verificar si una fila fue afectada
+        if (result.rowsAffected[0] > 0) {
+            return {
+                status: 201,
+                success: true,
+                mensaje: "Usuario guardado correctamente",
+            };
+        } else {
+            return {
+                status: 400,
+                success: false,
+                mensaje: "No se pudo guardar el usuario",
+            };
+        }
+    } catch (error) {
+        console.error("Error en usuarioPostService:", error);
+        return {
+            status: 500,
+            success: false,
+            mensaje: "Error de servidor o en la base de datos",
+            error: error,
+        };
+    } finally {
+        pool.close(); // Cerrar la conexión al pool
+    }
+};
+
 
 const usuarioGetAllService = async (filtro: string) => {
     const pool = await conexion(); // Conexión al pool
     try {
-        // Llamada al procedimiento almacenado `getAllUsuario` con el parámetro `filtro`
+        // Llamada al procedimiento almacenado `getAllUsuario` con el parámetro `filtro`npmx
         const result = await pool
             .request()
-            .input('filtro', sql.VarChar, filtro) // Asignar el parámetro `filtro`
+            .input('nombre', sql.VarChar, filtro) // Asignar el parámetro `filtro`
             .execute('GetPersona'); // Nombre del procedimiento almacenado
         
         if (result.recordset.length > 0) {
@@ -32,4 +88,4 @@ const usuarioGetAllService = async (filtro: string) => {
     }
 };
 
-export { usuarioGetAllService };
+export { usuarioGetAllService ,usuarioPostService};
