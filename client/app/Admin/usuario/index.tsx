@@ -1,16 +1,21 @@
-import { View, Text, TouchableOpacity, Animated, Dimensions, Easing } from 'react-native';
-import React, { useRef, useState } from 'react';
+import { View, Text, TouchableOpacity, Animated, Dimensions, Easing, ActivityIndicator } from 'react-native';
+import React, { useRef, useState, useTransition } from 'react';
 import ThemedView from '@/presentation/shared/ThemedView';
 import ThemedText from '@/presentation/shared/ThemedText';
 import ThemedTextInput from '@/presentation/shared/ThemedTextInput ';
 import { UserType } from '@/interface/user';
-import { createUser } from '@/api/services/userService';
+import { BackendError, newUsuario } from '@/api/services/userService';
 
 import FlashMessage, { showMessage } from "react-native-flash-message"
+import { validacionUsuario } from '@/models/validation/initialErrorUser';
 
 const UsuarioDrawer = () => {
   const animatedOpacity = useRef(new Animated.Value(0)).current;
   const animatedTop = useRef(new Animated.Value(-500)).current; // Posición inicial fuera de la pantalla
+
+  const [isLoading, setisLoading] = useState(false)
+  let initialErros = { name: "", email: "", password: "" }
+  const [errorUser, seterrorUser] = useState(initialErros)
 
   const fadein = () => {
     // Animación para que aparezca y venga hacia abajo
@@ -30,6 +35,7 @@ const UsuarioDrawer = () => {
   };
 
   const fadeOut = () => {
+    seterrorUser(initialErros)
     // Animación para que desaparezca y suba fuera de la pantalla
     Animated.parallel([
       Animated.timing(animatedOpacity, {
@@ -65,24 +71,30 @@ const UsuarioDrawer = () => {
     }))
 
   }
-
   const handleSubmit = async () => {
+    setisLoading(true);
     try {
-      const response = await createUser(formDataUser)
+      const response = await newUsuario(formDataUser);
       if (response.status === 201) {
         showMessage({
           message: "Guardado con éxito",
-          description: response.mensaje,
+          description: response.message,
           type: "success",
-          icon: "success",
         });
+        fadeOut();
       }
     } catch (error) {
+      const backendError = error as BackendError;
+      if (backendError.status === 400) {
+        const objectErrors = validacionUsuario(backendError.errors);
+        seterrorUser(objectErrors?.error);
+      }
+    } finally {
+      setisLoading(false);
 
-    }
-
-  }
-
+  };
+}
+  
   return (
     <ThemedView className="px-3">
       <FlashMessage position="bottom" />  {/*MENSAJES  DE LA LIBRERIA react-native-flash-message */}
@@ -108,27 +120,38 @@ const UsuarioDrawer = () => {
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Nombres</ThemedText>
           <ThemedTextInput placeholder="Ingrese su nombre" type="normal" onChangeText={(text) => handleOnchangeValues('name', text)} />
+          {errorUser.name && <Text className='text-red-500 pl-2 pt-1'>{errorUser.name}</Text>}
+
         </View>
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Email</ThemedText>
           <ThemedTextInput placeholder="Ingrese su email" type="normal" onChangeText={(text) => handleOnchangeValues('email', text)} />
+          {errorUser.email && <Text className='text-red-500 pl-2 pt-1'>{errorUser.email}</Text>}
         </View>
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Password</ThemedText>
           <ThemedTextInput placeholder="Ingrese su contraseña" type="normal" onChangeText={(text) => handleOnchangeValues('password', text)} />
+          {errorUser.password && <Text className='text-red-500 pl-2 pt-1'>{errorUser.password}</Text>}
         </View>
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Foto Perfil</ThemedText>
           <ThemedTextInput placeholder="Ingrese el enlace de su foto" type="normal" />
         </View>
         <View className="flex-row justify-end gap-4 mt-4">
-          <TouchableOpacity className="py-4 px-6 bg-indigo-50 dark:bg-dark-primary rounded-lg" onPress={handleSubmit}>
-            <Text className="text-indigo-500 dark:text-white text-[13px] font-semibold text-center">Agregar</Text>
+          <TouchableOpacity
+            className="py-4 px-6 bg-indigo-50 dark:bg-dark-primary rounded-lg flex-row justify-center"
+            onPress={handleSubmit}
+            disabled={isLoading}
+          >
+            {isLoading && <ActivityIndicator className="mr-2" color="#6366f1" />}
+            <Text className="text-indigo-500 dark:text-white text-[13px] font-semibold">
+              {isLoading ? "Guardando..." : "Agregar"}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={fadeOut}
             className="py-4 px-6 bg-red-50 dark:bg-dark-tertiary rounded-lg">
-            <Text className="text-red-500 text-[13px] font-semibold text-center dark:text-white" >Cancelar</Text>
+            <Text className="text-red-500 text-[13px] font-semibold text-center dark:text-white"  >Cancelar</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>

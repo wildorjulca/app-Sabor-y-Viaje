@@ -19,7 +19,6 @@
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/drawer": "^7.2.1",
     "@react-navigation/native": "^7.0.17",
-    "@types/axios": "^0.9.36",
     "axios": "^1.8.4",
     "expo": "~52.0.40",
     "expo-blur": "~14.0.3",
