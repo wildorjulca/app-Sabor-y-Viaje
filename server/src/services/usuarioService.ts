@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 
 
 interface UserType {
-    id: number; // Identificador único del usuario
+    id?: number; // Identificador único del usuario
     name: string; // Nombre del usuario
     email: string; // Correo electrónico (único)
     password: string; // Contraseña (encriptada)

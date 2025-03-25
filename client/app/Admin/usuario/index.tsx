@@ -1,8 +1,12 @@
 import { View, Text, TouchableOpacity, Animated, Dimensions, Easing } from 'react-native';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import ThemedView from '@/presentation/shared/ThemedView';
 import ThemedText from '@/presentation/shared/ThemedText';
 import ThemedTextInput from '@/presentation/shared/ThemedTextInput ';
+import { UserType } from '@/interface/user';
+import { createUser } from '@/api/services/userService';
+
+import FlashMessage, { showMessage } from "react-native-flash-message"
 
 const UsuarioDrawer = () => {
   const animatedOpacity = useRef(new Animated.Value(0)).current;
@@ -41,8 +45,47 @@ const UsuarioDrawer = () => {
     ]).start();
   };
 
+
+  // funciones para guardar
+  const [formDataUser, setformDataUser] = useState<UserType>({
+    id: 0,
+    name: "",
+    email: "",
+    password: "",
+    profilePicture: "",
+    bio: "",
+    // createdAt: ,
+    // updatedAt: ""
+  })
+
+  const handleOnchangeValues = (name: string, value: string) => {
+    setformDataUser(prev => ({
+      ...prev,
+      [name]: value
+    }))
+
+  }
+
+  const handleSubmit = async () => {
+    try {
+      const response = await createUser(formDataUser)
+      if (response.status === 201) {
+        showMessage({
+          message: "Guardado con éxito",
+          description: response.mensaje,
+          type: "success",
+          icon: "success",
+        });
+      }
+    } catch (error) {
+
+    }
+
+  }
+
   return (
     <ThemedView className="px-3">
+      <FlashMessage position="bottom" />  {/*MENSAJES  DE LA LIBRERIA react-native-flash-message */}
       <TouchableOpacity onPress={fadein} className="bg-blue-500 py-2 px-4 rounded mb-4">
         <Text className="text-white text-center">Abrir Formulario</Text>
       </TouchableOpacity>
@@ -64,22 +107,22 @@ const UsuarioDrawer = () => {
       >
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Nombres</ThemedText>
-          <ThemedTextInput placeholder="Ingrese su nombre" type="normal" />
+          <ThemedTextInput placeholder="Ingrese su nombre" type="normal" onChangeText={(text) => handleOnchangeValues('name', text)} />
         </View>
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Email</ThemedText>
-          <ThemedTextInput placeholder="Ingrese su email" type="normal" />
+          <ThemedTextInput placeholder="Ingrese su email" type="normal" onChangeText={(text) => handleOnchangeValues('email', text)} />
         </View>
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Password</ThemedText>
-          <ThemedTextInput placeholder="Ingrese su contraseña" type="normal" />
+          <ThemedTextInput placeholder="Ingrese su contraseña" type="normal" onChangeText={(text) => handleOnchangeValues('password', text)} />
         </View>
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Foto Perfil</ThemedText>
           <ThemedTextInput placeholder="Ingrese el enlace de su foto" type="normal" />
         </View>
         <View className="flex-row justify-end gap-4 mt-4">
-          <TouchableOpacity className="py-4 px-6 bg-indigo-50 dark:bg-dark-primary rounded-lg">
+          <TouchableOpacity className="py-4 px-6 bg-indigo-50 dark:bg-dark-primary rounded-lg" onPress={handleSubmit}>
             <Text className="text-indigo-500 dark:text-white text-[13px] font-semibold text-center">Agregar</Text>
           </TouchableOpacity>
           <TouchableOpacity
