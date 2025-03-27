@@ -1,13 +1,14 @@
-import { View, Text, TouchableOpacity, Animated, Dimensions, Easing, ActivityIndicator } from 'react-native';
-import React, { useRef, useState, useTransition } from 'react';
+import { View, TouchableOpacity, Animated, Dimensions, Easing, ActivityIndicator, TextInput, FlatList, RefreshControl, ScrollView } from 'react-native';
+import React, { useEffect, useRef, useState, useTransition } from 'react';
 import ThemedView from '@/presentation/shared/ThemedView';
-import ThemedText from '@/presentation/shared/ThemedText';
 import ThemedTextInput from '@/presentation/shared/ThemedTextInput ';
 import { UserType } from '@/interface/user';
-import { BackendError, newUsuario } from '@/api/services/userService';
-
+import { BackendError, getUsuario, newUsuario } from '@/api/services/userService';
+import { DataTable } from "react-native-paper";
 import FlashMessage, { showMessage } from "react-native-flash-message"
 import { validacionUsuario } from '@/models/validation/initialErrorUser';
+import { Ionicons } from '@expo/vector-icons';
+import ThemedText from '@/presentation/shared/ThemedText';
 
 const UsuarioDrawer = () => {
   const animatedOpacity = useRef(new Animated.Value(0)).current;
@@ -15,8 +16,59 @@ const UsuarioDrawer = () => {
 
   const [isLoading, setisLoading] = useState(false)
   let initialErros = { name: "", email: "", password: "" }
+
+
   const [errorUser, seterrorUser] = useState(initialErros)
 
+
+  const [data, setData] = useState<any[]>([]); // Datos cargados
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [page, setPage] = useState(0);
+  const [, setHasMore] = useState(true);
+  const [search, setSearch] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Función para cargar datos (API con paginación y filtro)
+  const fetchData = async (reset = false) => {
+    setIsLoadingData(true);
+    try {
+      const response = await getUsuario({ name: search, page: reset ? 1 : page, limit: 10 });
+
+      if (response.status && response.data) {
+        const newData = response.data;
+        console.log(newData.length)
+
+
+        setData(reset ? newData : [...data, ...newData]); // Resetea o concatena datos
+        setHasMore(newData.length >= 10); // Verifica si hay más datos
+        setPage(reset ? 2 : page + 1); // Actualiza la página
+        console.log({ reset, page })
+      }
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+    } finally {
+      setIsLoadingData(false);
+      if (reset) setIsRefreshing(false); // Detener el indicador de refresco
+    }
+  };
+
+  // Llama a la función `fetchData` cuando el componente se monta
+  useEffect(() => {
+    fetchData(true); // Carga inicial con reset
+  }, []);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    fetchData(true);
+  };
+
+
+
+  // Renderiza el indicador de carga al final de la lista
+  const renderFooter = () => {
+    if (!isLoadingData) return null;
+    return <ActivityIndicator style={{ margin: 10 }} />;
+  };
   const fadein = () => {
     // Animación para que aparezca y venga hacia abajo
     Animated.parallel([
@@ -92,22 +144,30 @@ const UsuarioDrawer = () => {
     } finally {
       setisLoading(false);
 
-  };
-}
-  
+    };
+  }
+
   return (
-    <ThemedView className="px-3">
-      <FlashMessage position="bottom" />  {/*MENSAJES  DE LA LIBRERIA react-native-flash-message */}
-      <TouchableOpacity onPress={fadein} className="bg-blue-500 py-2 px-4 rounded mb-4">
-        <Text className="text-white text-center">Abrir Formulario</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={fadeOut} className="bg-red-500 py-2 px-4 rounded mb-4">
-        <Text className="text-white text-center">Cerrar Formulario</Text>
-      </TouchableOpacity>
+    <ThemedView className="px-2">
+      <FlashMessage position="bottom" />
+
+      {/* Nav de input y del dasboard */}
+      <View className="flex-row justify-between gap-2 w-full items-center space-x-2">
+        <ThemedTextInput
+          className="flex-1  rounded-full"
+          placeholder="Buscar usuario"
+        />
+        <TouchableOpacity
+          onPress={fadein}
+          className="h-12 w-12 bg-blue-500 rounded-full items-center justify-center"
+        >
+          <Ionicons name="add" color={'white'} size={20} />
+        </TouchableOpacity>
+      </View>
 
       {/* Formulario Animado */}
       <Animated.View
-        className='bg-white dark:bg-dark-background p-2 gap-3'
+        className='bg-white dark:bg-dark-background p-2 gap-3 z-10'
         style={{
           width: Dimensions.get('window').width, // Ocupa el 100% del ancho de la pantalla
           height: 500, // Altura fija del formulario
@@ -115,23 +175,24 @@ const UsuarioDrawer = () => {
           transform: [{ translateY: animatedTop }], // Controla la posición vertical del formulario
           position: 'absolute', // Asegura que el formulario esté superpuesto
           top: 0,
+          // zIndex: 1
         }}
       >
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Nombres</ThemedText>
           <ThemedTextInput placeholder="Ingrese su nombre" type="normal" onChangeText={(text) => handleOnchangeValues('name', text)} />
-          {errorUser.name && <Text className='text-red-500 pl-2 pt-1'>{errorUser.name}</Text>}
+          {errorUser.name && <ThemedText className='text-red-500 pl-2 pt-1'>{errorUser.name}</ThemedText>}
 
         </View>
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Email</ThemedText>
           <ThemedTextInput placeholder="Ingrese su email" type="normal" onChangeText={(text) => handleOnchangeValues('email', text)} />
-          {errorUser.email && <Text className='text-red-500 pl-2 pt-1'>{errorUser.email}</Text>}
+          {errorUser.email && <ThemedText className='text-red-500 pl-2 pt-1'>{errorUser.email}</ThemedText>}
         </View>
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Password</ThemedText>
           <ThemedTextInput placeholder="Ingrese su contraseña" type="normal" onChangeText={(text) => handleOnchangeValues('password', text)} />
-          {errorUser.password && <Text className='text-red-500 pl-2 pt-1'>{errorUser.password}</Text>}
+          {errorUser.password && <ThemedText className='text-red-500 pl-2 pt-1'>{errorUser.password}</ThemedText>}
         </View>
         <View>
           <ThemedText className="mb-2 text-sm font-medium">Foto Perfil</ThemedText>
@@ -144,17 +205,30 @@ const UsuarioDrawer = () => {
             disabled={isLoading}
           >
             {isLoading && <ActivityIndicator className="mr-2" color="#6366f1" />}
-            <Text className="text-indigo-500 dark:text-white text-[13px] font-semibold">
+            <ThemedText className="text-indigo-500 dark:text-white text-[13px] font-semibold">
               {isLoading ? "Guardando..." : "Agregar"}
-            </Text>
+            </ThemedText>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={fadeOut}
             className="py-4 px-6 bg-red-50 dark:bg-dark-tertiary rounded-lg">
-            <Text className="text-red-500 text-[13px] font-semibold text-center dark:text-white"  >Cancelar</Text>
+            <ThemedText className="text-red-500 text-[13px] font-semibold text-center dark:text-white"  >Cancelar</ThemedText>
           </TouchableOpacity>
         </View>
+
+        {/* <FlatList
+            data={data} // Datos para renderizar
+            keyExtractor={(item, index) => index.toString()} // Clave única para cada elemento
+            renderItem={renderItem} // Renderiza cada elemento
+            onEndReached={() => fetchData()} // Cargar más datos al llegar al final
+            onEndReachedThreshold={0.5} // Umbral para activar la carga
+            ListFooterComponent={renderFooter} // Muestra el indicador de carga
+          /> */}
+        {/* </View> */}
+
       </Animated.View>
+
+     
     </ThemedView>
   );
 };

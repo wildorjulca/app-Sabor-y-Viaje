@@ -52,19 +52,20 @@ interface UserType {
             error: error,
         };
     } finally {
-        pool.close(); // Cerrar la conexión al pool
+        pool.close();
     }
 };
 
 
-const usuarioGetAllService = async (filtro: string) => {
-    const pool = await conexion(); // Conexión al pool
+const usuarioGetAllService = async (name: string, page: number, limit:number) => {
+    const pool = await conexion(); 
     try {
-        // Llamada al procedimiento almacenado `getAllUsuario` con el parámetro `filtro`npmx
         const result = await pool
             .request()
-            .input('nombre', sql.VarChar, filtro) // Asignar el parámetro `filtro`
-            .execute('GetPersona'); // Nombre del procedimiento almacenado
+            .input('name', sql.VarChar, name) 
+            .input('page', sql.Int, page)
+            .input('limit', sql.Int, limit)
+            .execute('getUserAll_PR'); 
         
         if (result.recordset.length > 0) {
             return { status: 200, succes: true, data: result.recordset };

@@ -1,7 +1,8 @@
 
-import { AxiosError, isAxiosError } from "axios";
+import axios, { AxiosError, isAxiosError } from "axios";
 import { axiosInstance } from "../axiosInstance ";
 import { UserType } from "@/interface/user";
+import { LayoutAnimationType } from "react-native-reanimated";
 
 
 interface ValidationError {
@@ -27,9 +28,41 @@ interface NewUsuarioResponse {
   data?: any;
 }
 
+
+
+
+export const getUsuario = async (params: { name?: string; page: number; limit: number }): Promise<NewUsuarioResponse> => {
+  try {
+    const { name, page, limit } = params;
+
+    // Construir la URL directamente con template literals
+    const response = await axiosInstance.get(
+      `/getUsuario?name=${name || ''}&page=${page}&limit=${limit}`
+    );
+
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError<BackendError>;
+
+    if (axiosError.response) {
+      throw {
+        status: axiosError.response.status,
+        message: axiosError.response.data.message || 'Error del servidor',
+        errors: axiosError.response.data?.errors,
+        success: false,
+      };
+    }
+
+    throw {
+      message: 'Error de conexión',
+      status: 500,
+      success: false,
+    };
+  }
+};
+
 export const newUsuario = async (usuario: UserType): Promise<NewUsuarioResponse> => {
   try {
-    console.log(usuario)
     const response = await axiosInstance.post<NewUsuarioResponse>("/postUsuario", usuario);
     console.log(response)
     return response.data;

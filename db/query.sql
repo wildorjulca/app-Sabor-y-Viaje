@@ -16,3 +16,20 @@ BEGIN
   VALUES (@name, @email, @password, @profile_picture, @bio);
 END;
 GO
+
+
+-- QUERY DE FILTRO Y SELECT GENERAL
+CREATE PROCEDURE getUser_PR 
+  @name NVARCHAR(100)
+AS
+BEGIN
+  IF @name = '' 
+   BEGIN
+     SELECT * FROM users
+   END
+  ELSE
+  BEGIN
+  SELECT * FROM users WHERE  name LIKE '% '+ @name + '%'
+  END
+END
+GO

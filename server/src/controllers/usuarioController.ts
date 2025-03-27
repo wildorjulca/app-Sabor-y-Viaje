@@ -9,7 +9,8 @@ const addUsurioCTRL = async (req: Request, res: Response) => {
 }
 
 const getUsuarioCTRL = async (req: Request, res: Response) => {
-    const response = await usuarioGetAllService('wildor')
+    const {name,page,limit} = req.query
+    const response = await usuarioGetAllService(String(name) || '', Number(page) || 1, Number(limit) || 10 )
     res.status(response.status).send(response)
 }
 

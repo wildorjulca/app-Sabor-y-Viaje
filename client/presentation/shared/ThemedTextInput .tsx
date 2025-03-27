@@ -15,8 +15,8 @@ const ThemedTextInput = ({ className, type = 'normal', ...rest }: Props) => {
         <TextInput
             placeholderTextColor={colorScheme === 'dark' ? '#fff' : '#aaa'} // Asigna el color según el tema
             className={[
-                'w-full rounded-lg text-base px-3 py-[12px]',
-                'bg-white dark:bg-[#1a1b1f] text-gray-900 dark:text-gray-100', // Fondo y texto base
+                'w-full rounded-lg text-base px-3 py-[14px]',
+                'bg-white dark:bg-[#0e1318] text-gray-900 dark:text-gray-100', // Fondo y texto base
                 type === 'normal'
                     ? 'border border-gray-100 dark:shadow-sm  dark:border-gray-800'
                     : '',
