@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const _layout = () => {
+const CarritoTabs = () => {
   return (
     <View>
-      <Text>_layout</Text>
+      <Text>CarritoTabs</Text>
     </View>
   )
 }
 
-export default _layout
+export default CarritoTabs
