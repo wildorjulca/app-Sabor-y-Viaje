@@ -1,10 +1,4 @@
--- Crear la base de datos
-CREATE DATABASE TravelAppDB;
-GO
 
--- Usar la base de datos
-USE TravelAppDB;
-GO
 
 -- Tabla de Usuarios
 CREATE TABLE users (
@@ -19,90 +13,128 @@ CREATE TABLE users (
 );
 GO
 
--- Tabla de Lugares
-CREATE TABLE places (
-    id INT IDENTITY(1,1) PRIMARY KEY, -- Identificador único del lugar
-    name NVARCHAR(100) NOT NULL,      -- Nombre del lugar
-    description NVARCHAR(MAX),        -- Descripción del lugar
-    location NVARCHAR(255),           -- Ubicación (dirección o coordenadas)
-    latitude DECIMAL(10, 8),          -- Latitud para mapas
-    longitude DECIMAL(11, 8),         -- Longitud para mapas
-    created_by INT NOT NULL,          -- ID del usuario que creó el lugar
-    created_at DATETIME DEFAULT GETDATE(), -- Fecha de creación
-    updated_at DATETIME DEFAULT GETDATE(), -- Fecha de última actualización
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE -- Relación con usuarios
-);
-GO
 
--- Tabla de Publicaciones
-CREATE TABLE posts (
-    id INT IDENTITY(1,1) PRIMARY KEY, -- Identificador único de la publicación
-    user_id INT NOT NULL,             -- ID del usuario que publicó
-    place_id INT NOT NULL,            -- ID del lugar asociado
-    photo_url NVARCHAR(255) NOT NULL, -- URL de la foto publicada
-    description NVARCHAR(MAX),        -- Descripción de la publicación
-    created_at DATETIME DEFAULT GETDATE(), -- Fecha de creación
-    updated_at DATETIME DEFAULT GETDATE(), -- Fecha de última actualización
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Relación con usuarios
-    FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE -- Relación con lugares
-);
-GO
+---- YA ESTA CREDA
+CREATE TABLE  Regiones (
+    id INT PRIMARY KEY IDENTITY(1,1),
+	Nombre NVARCHAR(100) NOT NULL,
+	Decripcion NVARCHAR(200),
+	ImagenPortada NVARCHAR(255),
+	Clima NVARCHAR(50),
+    MejorEpocaVisita NVARCHAR(100),
+    FechaCreacion DATETIME NOT NULL DEFAULT GETDATE(),
+    FechaActualizacion DATETIME NULL, 
+    Activo CHAR(1) DEFAULT 'A'
+)
 
--- Tabla de Calificaciones
-CREATE TABLE ratings (
-    id INT IDENTITY(1,1) PRIMARY KEY, -- Identificador único de la calificación
-    user_id INT NOT NULL,             -- ID del usuario que calificó
-    place_id INT NOT NULL,            -- ID del lugar calificado
-    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5), -- Calificación (1 a 5)
-    created_at DATETIME DEFAULT GETDATE(), -- Fecha de creación
-    updated_at DATETIME DEFAULT GETDATE(), -- Fecha de última actualización
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Relación con usuarios
-    FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE -- Relación con lugares
-);
-GO
 
--- Tabla de Comentarios
-CREATE TABLE comments (
-    id INT IDENTITY(1,1) PRIMARY KEY, -- Identificador único del comentario
-    user_id INT NOT NULL,             -- ID del usuario que comentó
-    place_id INT NOT NULL,            -- ID del lugar comentado
-    comment NVARCHAR(MAX) NOT NULL,   -- Contenido del comentario
-    created_at DATETIME DEFAULT GETDATE(), -- Fecha de creación
-    updated_at DATETIME DEFAULT GETDATE(), -- Fecha de última actualización
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Relación con usuarios
-    FOREIGN KEY (place_id) REFERENCES places(id) ON DELETE CASCADE -- Relación con lugares
+SELECT * FROM CategoriasLugares
+-- ya esta creada
+CREATE TABLE CategoriasLugares (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    Nombre NVARCHAR(50) NOT NULL, -- "Caminata", "Playa", "Río", "Arqueológico"
+    Icono NVARCHAR(50), -- Nombre del icono o URL
+    Descripcion NVARCHAR(200),
+    Activo CHAR(1) DEFAULT 'A'
 );
-GO
+SELECT * FROM LugaresTuristicos
+--- ya esta creada
+CREATE TABLE LugaresTuristicos(
+    id INT PRIMARY KEY IDENTITY(1,1),
+	Nombre NVARCHAR(150) NOT NULL,
+	Descripcion NVARCHAR(MAX),
+	Longitud DECIMAL(11, 8),
+	PrecioEntrada DECIMAL(10, 2),
+    HorarioApertura NVARCHAR(100),
+	Destacado BIT DEFAULT 0,
+    FechaCreacion DATETIME NOT NULL DEFAULT GETDATE(),
+	FechaActualizacion DATETIME NULL,
+    Activo CHAR(1) DEFAULT 'A',
+	-- RELACIONES
+	Cod_region INT NOT NULL,
+	Cod_categoria INT NOT NULL,
+    CONSTRAINT FK_Lugar_Region FOREIGN KEY(Cod_region) REFERENCES Regiones(id),
+	CONSTRAINT FK_Lugar_Categoria FOREIGN KEY (Cod_categoria) REFERENCES LugaresTuristicos(id)
+)
 
--- Tabla de Likes
-CREATE TABLE likes (
-    id INT IDENTITY(1,1) PRIMARY KEY, -- Identificador único del like
-    user_id INT NOT NULL,             -- ID del usuario que dio like
-    post_id INT NOT NULL,             -- ID de la publicación
-    created_at DATETIME DEFAULT GETDATE(), -- Fecha de creación
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- Relación con usuarios
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE -- Relación con publicaciones
-);
-GO
+SELECT * FROM ImagenesLugares
+--- Y esta creada
+CREATE TABLE ImagenesLugares  (
+    id INT PRIMARY KEY IDENTITY(1,1),
+	iamgen NVARCHAR(255) NOT NULL,
+	Orden INT DEFAULT 0,
+    EsPrincipal BIT DEFAULT 0,
+    Cod_lugarTuristico INT NOT NULL,
+	 EsAprobada BIT DEFAULT 1, -- Para moderar fotos subidas por usuarios
 
--- Tabla de Seguidores
-CREATE TABLE followers (
-    id INT IDENTITY(1,1) PRIMARY KEY, -- Identificador único de la relación
-    follower_id INT NOT NULL,         -- ID del usuario que sigue
-    followed_id INT NOT NULL,         -- ID del usuario seguido
-    created_at DATETIME DEFAULT GETDATE(), -- Fecha de creación
-    FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE, -- Relación con usuarios
-    FOREIGN KEY (followed_id) REFERENCES users(id) ON DELETE CASCADE -- Relación con usuarios
-);
-GO
+	CONSTRAINT FK_Imagen_Lugar  FOREIGN KEY (Cod_lugarTuristico) REFERENCES LugaresTuristicos(id)
+) 
+ALTER TABLE ImagenesLugares 
+ADD EsAprobada BIT DEFAULT 1
 
--- Tabla de Notificaciones
-CREATE TABLE notifications (
-    id INT IDENTITY(1,1) PRIMARY KEY, -- Identificador único de la notificación
-    user_id INT NOT NULL,             -- ID del usuario que recibe la notificación
-    message NVARCHAR(MAX) NOT NULL,   -- Contenido de la notificación
-    is_read BIT DEFAULT 0,            -- Indica si la notificación fue leída (0 = no, 1 = sí)
-    created_at DATETIME DEFAULT GETDATE(), -- Fecha de creación
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- Relación con usuarios
+SELECT * FROM Usuarios
+--- Y esta creado
+CREATE TABLE Usuarios (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    Nombre NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) UNIQUE NOT NULL,
+    Contrasena NVARCHAR(255) NOT NULL,
+    FotoPerfil NVARCHAR(255),
+    FechaRegistro DATETIME DEFAULT GETDATE(),
+    Activo CHAR(1) DEFAULT 'A'
 );
-GO
+
+SELECT * FROM Valoraciones
+-- Ya esta creado
+CREATE TABLE Valoraciones (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    Cod_usuario INT NOT NULL,
+    Cod_lugarTuristico INT NOT NULL,
+    Puntuacion TINYINT CHECK (Puntuacion BETWEEN 1 AND 5),
+    Fecha DATETIME DEFAULT GETDATE(),
+    
+    CONSTRAINT FK_Valoracion_Usuario FOREIGN KEY (Cod_usuario) REFERENCES Usuarios(id),
+    CONSTRAINT FK_Valoracion_Lugar FOREIGN KEY (Cod_lugarTuristico) REFERENCES LugaresTuristicos(id),
+    CONSTRAINT UQ_Valoracion UNIQUE (Cod_usuario, Cod_lugarTuristico) -- Un usuario solo puede valorar una vez
+);
+
+SELECT * FROM Favoritos
+-- Ya esta creada
+CREATE TABLE Favoritos (
+    Cod_usuario INT NOT NULL,
+    Cod_lugarTuristico INT NOT NULL,
+    FechaAgregado DATETIME DEFAULT GETDATE(),
+    
+    PRIMARY KEY (Cod_usuario, Cod_lugarTuristico),
+    CONSTRAINT FK_Favorito_Usuario FOREIGN KEY (Cod_usuario) REFERENCES Usuarios(id),
+    CONSTRAINT FK_Favorito_Lugar FOREIGN KEY (Cod_lugarTuristico) REFERENCES LugaresTuristicos(id)
+);
+
+SELECT * FROM COMENTARIOS
+-- Y esta creada
+CREATE TABLE Comentarios (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    Cod_usuario INT NOT NULL,
+    Cod_lugarTuristico INT NOT NULL,
+    Contenido NVARCHAR(MAX) NOT NULL,
+    Fecha DATETIME DEFAULT GETDATE(),
+    FechaActualizacion DATETIME NULL,
+    EsAprobado BIT DEFAULT 1, -- Para moderación
+    
+    CONSTRAINT FK_Comentario_Usuario FOREIGN KEY (Cod_usuario) REFERENCES Usuarios(id),
+    CONSTRAINT FK_Comentario_Lugar FOREIGN KEY (Cod_lugarTuristico) REFERENCES LugaresTuristicos(id)
+);
+
+SELECT * FROM FOTOSCOMENTARIOS
+-- Y esta creada
+CREATE TABLE FotosComentarios (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    Cod_comentario INT NOT NULL,
+    Cod_usuario INT NOT NULL,
+    URLImagen NVARCHAR(255) NOT NULL,
+    FechaSubida DATETIME DEFAULT GETDATE(),
+    EsAprobada BIT DEFAULT 0, -- Moderación para fotos de usuarios
+    
+    CONSTRAINT FK_FotoComentario_Comentario FOREIGN KEY (Cod_comentario) REFERENCES Comentarios(id),
+    CONSTRAINT FK_FotoComentario_Usuario FOREIGN KEY (Cod_usuario) REFERENCES Usuarios(id)
+);

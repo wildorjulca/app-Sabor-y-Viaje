@@ -13,7 +13,7 @@ const Tab = createBottomTabNavigator();
 
 const PublicBottomTabsNavigator = () => {
   const theme = useThemeColor({}, 'background');
-  const themeIcon = useThemeColor({}, 'tertiary');
+  const themeIcon = useThemeColor({}, 'text');
 
   return (
     <Tab.Navigator

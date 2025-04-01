@@ -3,6 +3,7 @@ import PublicBottomTabsNavigator from '@/navigation/PublicBottomTabsNavigator';
 import Informacion from './informacion';
 import { NavigationContainer } from '@react-navigation/native';
 import Detalles from './detalles';
+import InformationLugarTuristico from './informationLugarTuristico';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,11 @@ const _LayoutPublic = () => {
         />
 
         {/* Pantalla de información - con header y flecha de retroceso automática */}
+        {/* <Stack.Screen
+          name="informationLugarTuristico"
+          component={InformationLugarTuristico}
+          options={{ title: 'Lugar T' }}
+        /> */}
         <Stack.Screen
           name="Informacion"
           component={Informacion}

@@ -3,7 +3,9 @@ import PublicBottomTabsNavigator from '@/navigation/PublicBottomTabsNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import Informacion from '@/app/Public/informacion';
 import Detalles from '@/app/Public/detalles';
-import searchStack from '@/app/Public/search';
+// import searchStack from '@/app/Public/search';
+import InformationLugarTuristico from '@/app/Public/informationLugarTuristico';
+import SearchStack from '@/app/Public/search';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +37,11 @@ const PublicStack = () => {
             />
             <Stack.Screen
               name='searchStack'
-              component={searchStack}
+              component={SearchStack}
+            />
+              <Stack.Screen
+              name='informationLugarTuristico'
+              component={InformationLugarTuristico}
             />
         </Stack.Navigator>
 
