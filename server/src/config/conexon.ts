@@ -25,7 +25,7 @@ export const conexion = () => {
         user: "wildor",
         password: "wildor12345",
         server: "localhost",
-        database: "webstore",
+        database: "toursApp",
         options: {
             encrypt: true, // Requerido por Azure
             trustServerCertificate: true, // Para servidores locales

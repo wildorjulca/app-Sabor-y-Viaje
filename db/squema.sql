@@ -35,7 +35,7 @@ CREATE TABLE CategoriasLugares (
     Nombre NVARCHAR(50) NOT NULL, -- "Caminata", "Playa", "Río", "Arqueológico"
     Icono NVARCHAR(50), -- Nombre del icono o URL
     Descripcion NVARCHAR(200),
-    Activo CHAR(1) DEFAULT 'A'
+    ESTADO CHAR(1) DEFAULT 'A'
 );
 SELECT * FROM LugaresTuristicos
 --- ya esta creada
@@ -54,7 +54,7 @@ CREATE TABLE LugaresTuristicos(
 	Cod_region INT NOT NULL,
 	Cod_categoria INT NOT NULL,
     CONSTRAINT FK_Lugar_Region FOREIGN KEY(Cod_region) REFERENCES Regiones(id),
-	CONSTRAINT FK_Lugar_Categoria FOREIGN KEY (Cod_categoria) REFERENCES LugaresTuristicos(id)
+	CONSTRAINT FK_Lugar_Categoria FOREIGN KEY (Cod_categoria) REFERENCES CategoriasLugares(id)
 )
 
 SELECT * FROM ImagenesLugares

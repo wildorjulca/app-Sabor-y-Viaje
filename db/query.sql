@@ -33,3 +33,41 @@ BEGIN
   END
 END
 GO
+
+
+------------------------------------------
+------------- REGIONES -------------------
+-------------------------------------------
+CREATE PROCEDURE Regiones_pa 
+  @tipo INT = NULL
+AS
+BEGIN
+  -- Listar las regiones
+  IF @tipo  = 1
+     BEGIN
+	  SELECT id,Nombre,Descripcion,ImagenPortada,Clima,MejorEpocaVisita FROM Regiones
+	  RETURN
+	 END
+END
+GO
+
+
+------------------------------------------
+-----------CategoriasLugares--------------
+------------------------------------------
+
+CREATE PROCEDURE CategoriasLugares_PA 
+  @tipo INT = NULL
+AS
+BEGIN
+    IF @tipo = 1
+	  BEGIN
+	    SELECT id,Nombre,Icono,Descripcion, 
+		   CASE 
+		     WHEN  Estado = 'A' THEN 'ACTIVO'
+			 WHEN Estado = 'X' THEN 'INACTIVO' 
+			 ELSE 'Estado desconicido'
+			 END AS 'Estado'
+			 FROM CategoriasLugares WHERE Estado = 'A'
+	  END
+END
