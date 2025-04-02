@@ -23,11 +23,16 @@ import FeaturedDestinationCard, { PropsPlace } from '@/components/FeaturedDestin
 import { lugaresTuristicosChachapoyas, lugaresTuristicosCusco } from '@/data/lugaresTuristicos';
 import useLugarTuristicoStore from '@/storage/lugar-turisticos-store';
 import { router } from 'expo-router';
+import { useRegiones } from '@/hooks/hooks/regiones/useRegiones';
 
 
 const MachuPicchuScreen = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get('window');
+
+  const { data, error,loading} = useRegiones()
+  console.log(data)
+  console.log(error)
 
   const dataLugarTuristico = useLugarTuristicoStore((state) => state.dataLugarTuristico)
 
@@ -101,7 +106,7 @@ const MachuPicchuScreen = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   // Manejar la animación de fade para el input
-  const handleScroll = (event) => {
+  const handleScroll = (event: any) => {
     const currentPosition = event.nativeEvent.contentOffset.y;
     Animated.timing(fadeAnim, {
       toValue: currentPosition > 100 ? 1 : 0,
@@ -111,14 +116,6 @@ const MachuPicchuScreen = () => {
     }).start();
   };
 
-  const place = {
-    id: 1,
-    title: "Machu Picchu",
-    location: "Cusco, Perú",
-    rating: "4.9",
-    price: "75",
-    image: require('../../../assets/images/machuPicchu/OIP (25).jpg') // Ajusta la ruta
-  };
 
   const obtenerLugaresTuristicos = (id: number) => {
     return lugaresTuristicosCusco.filter((item) => item.codRegion === id);
@@ -203,7 +200,7 @@ const MachuPicchuScreen = () => {
 
         {/* Seccion de las tarjetas del lugares */}
         <FlatList
-          data={lugares}
+          data={data}
           showsHorizontalScrollIndicator={false}
           horizontal
           renderItem={({ item }) => (

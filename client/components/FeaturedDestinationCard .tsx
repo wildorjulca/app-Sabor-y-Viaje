@@ -3,29 +3,32 @@ import React from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import ThemedText from '@/presentation/shared/ThemedText';
 import { LinearGradient } from 'expo-linear-gradient';
+import { RegionType } from '@/interface/regiones';
+import FadeImage from './image/fade-image';
 
-export interface PropsPlace {
-    id: number;
-    titulo: string;
-    ubicacion: string;
-    calificacion?: number;
-    actividades?: string[];
-    duracion: string;
-    precio: string;
-    imagenLocal: ImageSourcePropType | undefined;
-    enlaceMapa?: string
-}
+// export interface PropsPlace {
+//     id: number;
+//     titulo: string;
+//     ubicacion: string;
+//     calificacion?: number;
+//     actividades?: string[];
+//     duracion: string;
+//     precio: string;
+//     imagenLocal: ImageSourcePropType | undefined;
+//     enlaceMapa?: string
+// }
 
 
-const FeaturedDestinationCard = (place: PropsPlace) => {
+const FeaturedDestinationCard = (region: RegionType) => {
+    console.log(region.id)
     return (
         <View className="items-center space-y-3 bg-white dark:bg-gray-800 pt-0 pb-5 rounded-2xl shadow-lg w-64 overflow-hidden mr-4">
             {/* Contenedor de imagen con overflow hidden */}
             <View className="relative w-full h-40 rounded-xl overflow-hidden">
-                <Image
+                <FadeImage
                     className="w-full h-full"
-                    source={place.imagenLocal}
-                    resizeMode="cover"
+                    uri={region.ImagenPortada}
+                    resizeMode='cover'
                 />
 
                 {/* Badge de ubicación interactivo */}
@@ -58,14 +61,14 @@ const FeaturedDestinationCard = (place: PropsPlace) => {
                             type="semi-bold"
                             className="text-xl text-gray-900 dark:text-white"
                         >
-                            {place.titulo}
+                            {region.Nombre}
                         </ThemedText>
                         <View className="flex-row items-center mt-1">
                             <Ionicons name="location-sharp" size={14} color="#6B7280" />
                             <ThemedText
                                 className="text-gray-600 dark:text-gray-300 ml-1 text-sm"
                             >
-                                Cusco, Perú
+                                {region.Nombre}
                             </ThemedText>
                         </View>
                     </View>
@@ -73,7 +76,7 @@ const FeaturedDestinationCard = (place: PropsPlace) => {
                     <View className="bg-amber-100 dark:bg-amber-900/30 px-2 py-1 rounded flex-row items-center">
                         <Ionicons name="star" size={14} color="#F59E0B" />
                         <Text className="text-amber-800 dark:text-amber-500 ml-1 text-sm font-bold">
-                            {place.calificacion}
+                            4.3
                         </Text>
                     </View>
                 </View>

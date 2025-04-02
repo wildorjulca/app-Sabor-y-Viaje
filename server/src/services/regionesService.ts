@@ -17,7 +17,7 @@ interface Region {
 interface ServiceResponse {
     status: number;
     success: boolean;
-    mensaje: string;
+    message: string;
     error?: any;
     data?: Region[]; // Si el tipo de dato es una lista de Regiones
 }
@@ -41,7 +41,7 @@ const regionesGetAllService = async (): Promise<ServiceResponse> => {
             return {
                 status: 200,
                 success: true,
-                mensaje: "Regiones obtenidas correctamente",
+                message: "Regiones obtenidas correctamente",
                 data: result.recordset, // Regresar las regiones obtenidas
             };
         }
@@ -50,7 +50,7 @@ const regionesGetAllService = async (): Promise<ServiceResponse> => {
         return {
             status: 404,
             success: false,
-            mensaje: "No se encontraron regiones.",
+            message: "No se encontraron regiones.",
         };
 
     } catch (error: ServiceError) {
@@ -62,7 +62,7 @@ const regionesGetAllService = async (): Promise<ServiceResponse> => {
             return {
                 status: 500,
                 success: false,
-                mensaje: "Error en la base de datos",
+                message: "Error en la base de datos",
                 error: error.message,
             };
         }
@@ -72,7 +72,7 @@ const regionesGetAllService = async (): Promise<ServiceResponse> => {
             return {
                 status: 500,
                 success: false,
-                mensaje: "Error interno en el servidor",
+                message: "Error interno en el servidor",
                 error: error.message,
             };
         }
@@ -81,7 +81,7 @@ const regionesGetAllService = async (): Promise<ServiceResponse> => {
         return {
             status: 500,
             success: false,
-            mensaje: "Error desconocido",
+            message: "Error desconocido",
             error: "Un error desconocido ocurrió",
         };
     } finally {
