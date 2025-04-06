@@ -16,7 +16,6 @@ export const useRegiones = () => {
                 }
                 setLoading(false);
             } catch (err) {
-                console.log(err)
                 setError(err as BackendError);
                 setLoading(false);
             }

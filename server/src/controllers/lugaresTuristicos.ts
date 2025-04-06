@@ -3,9 +3,11 @@ import { lugaresTuristicosGetAllService } from "../services/lugaresTuristicosSer
 
 
 
-const getRegionesCTRL = async(req:Request, res: Response)=>{
-    const response = await lugaresTuristicosGetAllService()
+const getLugaresTuristicosCTRL = async(req:Request, res: Response)=>{
+    const id_region = req.params.id
+    const response = await lugaresTuristicosGetAllService(parseInt(id_region))
+    res.status(response.status).send(response)
 
 }
 
-export { getRegionesCTRL}
+export { getLugaresTuristicosCTRL}

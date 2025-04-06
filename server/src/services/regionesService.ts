@@ -36,6 +36,7 @@ const regionesGetAllService = async (): Promise<ServiceResponse> => {
             .input('tipo', sql.Int, 1)
             .execute('dbo.Regiones_pa');
 
+
         // Si se encontraron resultados
         if (result.recordset && result.recordset.length > 0) {
             return {

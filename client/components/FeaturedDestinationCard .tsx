@@ -1,42 +1,46 @@
-import { View, Text, Image, TouchableOpacity, Linking, ImageSourcePropType } from 'react-native'
+import { View, Text, TouchableOpacity, Linking, Pressable } from 'react-native'
 import React from 'react'
-import { Ionicons } from '@expo/vector-icons';
-import ThemedText from '@/presentation/shared/ThemedText';
-import { LinearGradient } from 'expo-linear-gradient';
-import { RegionType } from '@/interface/regiones';
-import FadeImage from './image/fade-image';
+import { Ionicons } from '@expo/vector-icons'
+import ThemedText from '@/presentation/shared/ThemedText'
+import { LinearGradient } from 'expo-linear-gradient'
+import { RegionType } from '@/interface/regiones'
+import FadeImage from './image/fade-image'
+import useLugarTuristicoStore from '@/storage/lugar-turisticos-store'
 
-// export interface PropsPlace {
-//     id: number;
-//     titulo: string;
-//     ubicacion: string;
-//     calificacion?: number;
-//     actividades?: string[];
-//     duracion: string;
-//     precio: string;
-//     imagenLocal: ImageSourcePropType | undefined;
-//     enlaceMapa?: string
-// }
+interface Props {
+    region: RegionType
+    active?: boolean
+    onPress: (cod_region: number) => void
+}
+
+const FeaturedDestinationCard = ({ region, active, onPress }: Props) => {
 
 
-const FeaturedDestinationCard = (region: RegionType) => {
-    console.log(region.id)
+ 
+    const handleMapPress = () => {
+        Linking.openURL(
+            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(region.Nombre)}`
+        )
+    }
+
     return (
-        <View className="items-center space-y-3 bg-white dark:bg-gray-800 pt-0 pb-5 rounded-2xl shadow-lg w-64 overflow-hidden mr-4">
-            {/* Contenedor de imagen con overflow hidden */}
+        <Pressable
+            onPress={() => onPress(region.id)}
+            className={`items-center space-y-3 bg-white dark:bg-gray-800 pt-0 pb-5 rounded-2xl shadow-lg w-64 overflow-hidden mr-4 
+        ${active ? 'border-2 border-blue-500 dark:border-blue-400' : 'border-2 border-transparent'}`}
+        >
+            {/* Contenedor de imagen */}
             <View className="relative w-full h-40 rounded-xl overflow-hidden">
                 <FadeImage
                     className="w-full h-full"
                     uri={region.ImagenPortada}
-                    resizeMode='cover'
+                    resizeMode="cover"
                 />
 
-                {/* Badge de ubicación interactivo */}
+                {/* Badge de ubicación */}
                 <TouchableOpacity
-                    className=" absolute z-10 bottom-2 right-2 bg-white/90 dark:bg-gray-800/90 flex-row items-center px-3 py-1.5 rounded-full shadow-sm"
-                    onPress={() =>
-                        Linking.openURL('https://www.google.com/maps/place/Machu+Picchu/@-13.1630672,-72.5451289,17z/data=!3m1!4b1!4m6!3m5!1s0x916d9a5f89555555:0x3a10370ea4a01a27!8m2!3d-13.1630672!4d-72.5451289!16zL20vMDZfbnkx?entry=ttu')
-                    }
+                    className="absolute z-10 bottom-2 right-2 bg-white/90 dark:bg-gray-800/90 flex-row items-center px-3 py-1.5 rounded-full shadow-sm"
+                    onPress={handleMapPress}
                 >
                     <Ionicons name="map" size={16} color="#3B82F6" />
                     <Text className="text-blue-500 dark:text-blue-400 ml-1 text-xs font-medium">
@@ -44,7 +48,7 @@ const FeaturedDestinationCard = (region: RegionType) => {
                     </Text>
                 </TouchableOpacity>
 
-                {/* Overlay de gradiente - ahora correctamente contenido */}
+                {/* Overlay de gradiente */}
                 <View className="absolute bottom-0 w-full h-1/3">
                     <LinearGradient
                         colors={['transparent', 'rgba(0,0,0,0.7)']}
@@ -53,8 +57,8 @@ const FeaturedDestinationCard = (region: RegionType) => {
                 </View>
             </View>
 
-            {/* Resto del contenido permanece igual */}
-            <View className="w-full pl-3 pr-3 pt-3">
+            {/* Contenido */}
+            <View className="w-full px-3 pt-3">
                 <View className="flex-row justify-between items-start">
                     <View className="flex-1">
                         <ThemedText
@@ -65,9 +69,7 @@ const FeaturedDestinationCard = (region: RegionType) => {
                         </ThemedText>
                         <View className="flex-row items-center mt-1">
                             <Ionicons name="location-sharp" size={14} color="#6B7280" />
-                            <ThemedText
-                                className="text-gray-600 dark:text-gray-300 ml-1 text-sm"
-                            >
+                            <ThemedText className="text-gray-600 dark:text-gray-300 ml-1 text-sm">
                                 {region.Nombre}
                             </ThemedText>
                         </View>
@@ -104,8 +106,8 @@ const FeaturedDestinationCard = (region: RegionType) => {
                     </View>
                 </View>
             </View>
-        </View>
+        </Pressable>
     )
 }
 
-export default FeaturedDestinationCard 
+export default FeaturedDestinationCard

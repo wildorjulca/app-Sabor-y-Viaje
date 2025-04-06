@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Dimensions,
@@ -10,6 +10,7 @@ import {
   Image,
   Text,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Carousel from 'react-native-reanimated-carousel';
@@ -19,24 +20,26 @@ import { useNavigation } from '@react-navigation/native';
 import PeruDestinationCard from '@/components/PeruDestinationCard';
 import { StyleSheet } from 'react-native';
 
-import FeaturedDestinationCard, { PropsPlace } from '@/components/FeaturedDestinationCard ';
 import { lugaresTuristicosChachapoyas, lugaresTuristicosCusco } from '@/data/lugaresTuristicos';
-import useLugarTuristicoStore from '@/storage/lugar-turisticos-store';
+// import useLugarTuristicoStore from '@/storage/lugar-turisticos-store';
 import { router } from 'expo-router';
 import { useRegiones } from '@/hooks/hooks/regiones/useRegiones';
+import FeaturedDestinationCard from '@/components/FeaturedDestinationCard ';
+import { useLugaresTuristico } from '@/hooks/hooks/regiones/uselugaresTuristicos';
+import { obtenerImagenPrincipal } from '@/utils/obtenerImagenPrincipal';
+import ItemLugarTuristico from '@/components/itemLugarTuristico';
+import useLugarTuristicoStore from '@/storage/lugar-turisticos-store';
+import SkeletonLugarTuristicoItem from '@/components/Skeletons/SkeletonLugarTuristicoItem';
 
 
 const MachuPicchuScreen = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get('window');
 
-  const { data, error,loading} = useRegiones()
-  console.log(data)
-  console.log(error)
+  const { data, error, loading } = useRegiones()
+  // const { dataTuristicos, errorTuristico, loadingTuristico } = useLugaresTuristico()
+  const { dataLugarTuristico, fetchFiltroRegion, loadingFiltroRegion } = useLugarTuristicoStore()
 
-  const dataLugarTuristico = useLugarTuristicoStore((state) => state.dataLugarTuristico)
-
-  // Lugares de destino
   const lugaresPeru = [
     {
       id: 1,
@@ -63,43 +66,6 @@ const MachuPicchuScreen = () => {
       imagen: 'https://api.a0.dev/assets/image?text=rainbow+mountain+peru+vinicunca+colorful+stripes+dramatic+landscape&aspect=16:9',
     },
   ];
-  const lugares: PropsPlace[] = [
-    {
-      id: 1,
-      titulo: "Machu Picchu",
-      ubicacion: "Cusco, Perú",
-      calificacion: 4.9,
-      actividades: ["Trekking"],
-      duracion: "Full day",
-      precio: "$50+",
-      imagenLocal: require('../../../assets/images/machuPicchu/OIP (25).jpg'),
-      enlaceMapa: "https://www.google.com/maps/place/Machu+Picchu/@-13.1630672,-72.5451289,17z/data=!3m1!4b1!4m6!3m5!1s0x916d9a5f89555555:0x3a10370ea4a01a27!8m2!3d-13.1630672!4d-72.5451289!16zL20vMDZfbnkx?entry=ttu",
-    },
-    {
-      id: 2,
-      titulo: "Machu Picchu",
-      ubicacion: "Cusco, Perú",
-      calificacion: 4.9,
-      actividades: ["Trekking"],
-      duracion: "Full day",
-      precio: "$50+",
-      imagenLocal: require('../../../assets/images/machuPicchu/OIP (24).jpg'),
-      enlaceMapa: "https://www.google.com/maps/place/Machu+Picchu/@-13.1630672,-72.5451289,17z/data=!3m1!4b1!4m6!3m5!1s0x916d9a5f89555555:0x3a10370ea4a01a27!8m2!3d-13.1630672!4d-72.5451289!16zL20vMDZfbnkx?entry=ttu",
-    },
-    {
-      id: 3,
-      titulo: "Tarapoto",
-      ubicacion: "San Martín, Perú",
-      calificacion: 4.7,
-      actividades: ["Exploración de cascadas", "Avistamiento de aves"],
-      duracion: "3 días",
-      precio: "$150+",
-      imagenLocal: require('../../../assets/images/tarapoto-lettering-bello-horizonte-san-martin-peru-256484943.webp'), // Asegúrate de tener esta imagen en la ruta especificada
-      enlaceMapa: "https://www.google.com/maps/place/Tarapoto,+San+Martín,+Perú/@-6.4824785,-76.3737805,12z/data=!3m1!4b1!4m6!3m5!1s0x91e3ef5a7df53d1d:0xf55dc2e973bd7a44!8m2!3d-6.486667!4d-76.373056!16s%2Fm%2F01z3h3_",
-    }
-
-  ];
-
 
   // Estados y referencias
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -116,13 +82,19 @@ const MachuPicchuScreen = () => {
     }).start();
   };
 
+  const [cod_region, setCodRegion] = useState(1)
+  const handleRegionChange = useCallback((id: number) => {
+    setCodRegion(id);
+  }, []);
 
-  const obtenerLugaresTuristicos = (id: number) => {
-    return lugaresTuristicosCusco.filter((item) => item.codRegion === id);
+  // Efecto para cargar datos
+  useEffect(() => {
+    fetchFiltroRegion(cod_region);
+  }, [cod_region, fetchFiltroRegion]);
 
 
-  }
-  console.log(obtenerLugaresTuristicos(1))
+
+
 
   return (
     <ThemedView className="flex-1">
@@ -148,6 +120,7 @@ const MachuPicchuScreen = () => {
           placeholderTextColor="#999"
         />
       </Animated.View>
+
 
       <ScrollView
         scrollEventThrottle={16}
@@ -204,58 +177,44 @@ const MachuPicchuScreen = () => {
           showsHorizontalScrollIndicator={false}
           horizontal
           renderItem={({ item }) => (
-            <FeaturedDestinationCard  {...item} />
+            <FeaturedDestinationCard region={item}
+              active={item.id === cod_region}
+              onPress={(id) => { handleRegionChange(id) }}
+            />
+
           )}
 
         />
-
-        {/* card item */}
-        <View className="flex-row flex-wrap justify-between mt-7 px-5">
-          {lugaresTuristicosChachapoyas.map(item => (
-            <TouchableOpacity
-              key={item.id}
-              className="w-[48%] mb-4"
-              activeOpacity={0.9}
-              onPress={() => navigation.navigate('informationLugarTuristico', { id: 1 })}
-            >
-              <View className="bg-white dark:bg-gray-800  rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-                {/* Sección de imagen con título superpuesto */}
-                <View className="h-40 w-full relative">
-                  <Image
-                    source={require('../../../assets/images/machuPicchu/OIP (25).jpg')}
-                    className="w-full h-full"
-                    resizeMode="cover"
-                  />
-                  <View className="absolute top-2 left-2 bg-black/60 px-3 py-1 rounded-full">
-                    <Text className="text-white text-xs font-semibold">
-                      {item.Nombre}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* Sección de texto */}
-                <View className="p-3">
-                  <ThemedText className="mt-1" numberOfLines={3}>
-                    {item.Descripcion}
-                  </ThemedText>
-                  <View className="flex-row items-center mt-3 justify-between">
-                    <Text className="text-green-600 font-bold text-lg">
-                      ${item.PrecioEntrada}
-                    </Text>
-                    <Text className="text-gray-400 text-xs">/persona</Text>
-                  </View>
-                  <Text className="text-xs text-gray-500 mt-2">
-                    ⏰ {item.HorarioApertura}
-                  </Text>
-                </View>
+        {loadingFiltroRegion &&
+          (
+            <View style={{ flex: 1, padding: 20 }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                {[...Array(6)].map((_, index) => (
+                  <SkeletonLugarTuristicoItem key={`skeleton-${index}`} />
+                ))}
               </View>
-            </TouchableOpacity>
-          ))}
-        </View>
+            </View>
+          )
+        }
+        <FlatList
+          data={dataLugarTuristico}
+          numColumns={2} // Esto hace que se muestren 2 columnas
+          columnWrapperStyle={{ justifyContent: 'space-between' }} // Espacio entre columnas
+          contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 10 }} // Padding general
+          renderItem={({ item }) => (
+            <ItemLugarTuristico placeLugar={item} />
+          )}
+          keyExtractor={(item) => item.id.toString()}
+        // onEndReached={}
+        // onEndReachedThreshold={}
+        // ListFooterComponent={() => (
+        //   <ActivityIndicator size={40} />
+        // )}
+        />
+
 
       </ScrollView>
 
-      {/* Botón de Búsqueda Flotante */}
       <TouchableOpacity
         className="absolute bottom-10 right-6 bg-blue-500 p-4 rounded-full shadow-lg"
         onPress={() => navigation.navigate('searchStack')}

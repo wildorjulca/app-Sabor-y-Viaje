@@ -24,3 +24,56 @@ export interface LugareTuristicoType {
     Activo : string;
 
 }
+
+export interface LugaresTuristicoPorRegionType {
+    id: number,
+    Nombre : string,
+    Descripcion: string,
+    Longitud? : number,
+    PrecioEntrada?: number,
+    HorarioApertura: string,
+    idRegion: string,
+    Region: string,
+    idCategoria: number ,
+    Categoria: string,
+    Imagenes : [],
+}
+
+
+// TPADO DE LAS INFORMACIONES
+export interface ImagenLugar {
+    id: number;
+    Imagen: string;
+}
+
+export interface LugarDetalle {
+    LugarID: number;
+    NombreLugar: string;
+    Descripcion: string;
+    Longitud: number;
+    PrecioEntrada: number;
+    HorarioApertura: string;
+    Destacado: boolean;
+    Region: string;
+    Categoria: string;
+}
+export interface Comentario  {
+    IdComentario: number;
+    Comentario: string;
+    FechaComentario: string; 
+    IdUsuario: number;
+    Usuario: string;
+    FotoPerfil: string | null;
+    Valoracion: number | null; 
+    FechaValoracion: string | null; 
+  };
+  
+
+export interface ApiResponseLugarTuristico {
+    status: number;
+    succes: boolean; // Nota: Hay un error de ortografía en "success" en tu API
+    message: string;
+    lugar: LugarDetalle[];
+    imagenes: ImagenLugar[];
+    comentarios?: Comentario[];
+}

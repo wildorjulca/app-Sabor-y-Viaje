@@ -4,8 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import Informacion from '@/app/Public/informacion';
 import Detalles from '@/app/Public/detalles';
 // import searchStack from '@/app/Public/search';
-import InformationLugarTuristico from '@/app/Public/informationLugarTuristico';
+
 import SearchStack from '@/app/Public/search';
+import InformationLugarTuristico from '@/app/Public/informationLugarTuristico';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,12 +37,12 @@ const PublicStack = () => {
                 options={{ title: 'Detalles' }}
             />
             <Stack.Screen
-              name='searchStack'
-              component={SearchStack}
+                name='searchStack'
+                component={SearchStack}
             />
-              <Stack.Screen
-              name='informationLugarTuristico'
-              component={InformationLugarTuristico}
+            <Stack.Screen
+                name='informationLugarTuristico'
+                component={InformationLugarTuristico}
             />
         </Stack.Navigator>
 
