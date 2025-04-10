@@ -1,0 +1,131 @@
+import { View, TextInput, TouchableOpacity, Image, Text } from 'react-native';
+import React from 'react';
+import ThemedView from '@/presentation/shared/ThemedView';
+import ThemedText from '@/presentation/shared/ThemedText';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const AuthScreen = () => {
+  return (
+    <ThemedView className="flex-1 dark:bg-slate-900">
+      <View className="flex-1 px-6">
+        {/* Encabezado simple */}
+        <View className="mb-10 items-center">
+          <Image
+            source={require('../../assets/cuenta.png')}
+            className="w-20 h-20 mb-4"
+          />
+          <ThemedText className="text-2xl font-bold mb-1 text-gray-900 dark:text-white">
+            Iniciar Sesión
+          </ThemedText>
+          <ThemedText className="text-gray-500 dark:text-gray-400">
+            Ingresa tus datos para continuar
+          </ThemedText>
+        </View>
+
+        {/* Formulario simple */}
+        <View className="w-full mb-8">
+          {/* Input Email */}
+          <View className="mb-4">
+            <TextInput
+              className="border relative z-20 border-gray-300 dark:border-gray-600 rounded-full px-4 py-4 
+                        text-gray-900 dark:text-white mb-2"
+              placeholder="Correo electrónico"
+              placeholderTextColor="#9CA3AF"
+            // keyboardType="email-address"
+            // autoCapitalize="none"
+            />
+          </View>
+
+          {/* Input Contraseña */}
+          <View className="mb-6">
+            <TextInput
+              className="border border-gray-300 dark:border-gray-600 rounded-full px-4 py-4 relative z-20 
+                        text-gray-900 dark:text-white"
+              placeholder="Contraseña"
+              placeholderTextColor="#9CA3AF"
+            // secureTextEntry
+            />
+          </View>
+
+          {/* Botón Principal */}
+          <TouchableOpacity
+            className="py-5 rounded-full bg-blue-500 items-center justify-center"
+            activeOpacity={0.8}
+          >
+            <ThemedText className="text-white font-medium">
+              Ingresar
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+
+        {/* Separador */}
+        <View className="flex-row items-center my-8 w-full">
+          <View className="flex-1 h-0.5 bg-gray-300 dark:bg-gray-700" />
+          <ThemedText className="px-4 text-gray-400 dark:text-gray-500 text-sm font-bold">
+            O CONECTA CON
+          </ThemedText>
+          <View className="flex-1 h-0.5 bg-gray-300 dark:bg-gray-700" />
+        </View>
+
+        {/* Botones Sociales a todo ancho */}
+        <View className="gap-2">
+          <TouchableOpacity
+            className="flex-row items-center justify-center py-3 px-4 rounded-lg bg-gray-50 dark:bg-gray-800 
+                      border border-gray-300 dark:border-gray-600"
+            activeOpacity={0.8}
+          >
+            <Image
+              source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991148.png' }}
+              className="w-6 h-6 mr-3"
+            />
+            <ThemedText className="text-gray-800 dark:text-gray-200 font-medium">
+              Continuar con Google
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="flex-row items-center justify-center py-3 px-4 rounded-lg bg-gray-50 dark:bg-gray-800 
+                      border border-gray-300 dark:border-gray-600"
+            activeOpacity={0.8}
+          >
+            <Image
+              source={{ uri: 'https://cdn-icons-png.flaticon.com/512/124/124010.png' }}
+              className="w-6 h-6 mr-3"
+            />
+            <ThemedText className="text-gray-800 dark:text-gray-200 font-medium">
+              Continuar con Facebook
+            </ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="flex-row items-center justify-center py-3 px-4 rounded-lg bg-gray-50 dark:bg-gray-800 
+                      border border-gray-300 dark:border-gray-600"
+            activeOpacity={0.8}
+          >
+            <Image
+              source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2111/2111463.png' }}
+              className="w-6 h-6 mr-3"
+            />
+            <ThemedText className="text-gray-800 dark:text-gray-200 font-medium">
+              Continuar con Instagram
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+
+        {/* Cambiar a registro */}
+        <View className="flex-row justify-center  relative top-2">
+          <ThemedText className="text-gray-500 dark:text-gray-400 text-sm">
+            ¿ERES NUEVO EN NEXUS?
+          </ThemedText>
+          <TouchableOpacity activeOpacity={0.7}>
+            <ThemedText className="text-blue-400 font-black ml-2 text-sm">
+              CREAR CUENTA
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ThemedView>
+  );
+};
+
+export default AuthScreen;

@@ -14,7 +14,7 @@ interface UserType {
     updatedAt?: Date; // Fecha de última actualización
   }
   
-
+   
 
   const usuarioPostService = async (user: UserType) => {
     const pool = await conexion();

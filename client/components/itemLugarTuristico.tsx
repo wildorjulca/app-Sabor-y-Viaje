@@ -59,7 +59,7 @@ const ItemLugarTuristico = ({ placeLugar }: Props) => {
                       
                     /> */}
                     <View className="absolute top-2 left-2 bg-black/60 px-3 py-1 rounded-full">
-                        <Text className="text-white text-xs font-semibold">
+                        <Text className="text-white text-xs font-WorkSans-SemiBold-Italic">
                             {placeLugar.Nombre}
                         </Text>
                     </View>
@@ -67,7 +67,7 @@ const ItemLugarTuristico = ({ placeLugar }: Props) => {
 
                 {/* Sección de texto */}
                 <View className="p-3">
-                    <ThemedText className="mt-1" numberOfLines={3}>
+                    <ThemedText className="mt-1 font-WorkSans-Medium-Italic" numberOfLines={3}>
                         {placeLugar.Descripcion}
                     </ThemedText>
                     <View className="flex-row items-center mt-3 justify-between">

@@ -32,7 +32,7 @@ export interface LugaresTuristicoPorRegionType {
     Longitud? : number,
     PrecioEntrada?: number,
     HorarioApertura: string,
-    idRegion: string,
+    idRegion: number,
     Region: string,
     idCategoria: number ,
     Categoria: string,

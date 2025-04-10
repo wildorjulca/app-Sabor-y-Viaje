@@ -11,6 +11,8 @@ import { useInformationTuristicoStore } from '@/storage/information-lugar-store'
 import { LugarDetalle } from '@/interface/lugaresTuristicos';
 import ThemedText from '@/presentation/shared/ThemedText';
 import Avatar from '@/components/avatar/GenerationAvatar';
+import ChatInput from '@/components/ChatInput';
+
 
 
 const imagenes = [
@@ -29,7 +31,8 @@ type Props = {
 };
 
 const InformationLugarTuristico = ({ route }: Props) => {
-
+  
+  
   const { informacionLugar, loading, error, fetchLugares } = useInformationTuristicoStore()
   const id = Number(route.params.id)
 
@@ -102,9 +105,14 @@ const InformationLugarTuristico = ({ route }: Props) => {
   //   );
   // }
 
+  const handleSendMessage = (message: string) => {
+    console.log('Mensaje enviado:', message);
+    // Aquí enviarías el mensaje a tu backend
+  };
+
   return (
     <>
-      <ThemedView style={{ flex: 1 }}>
+      <ThemedView style={{ flex: 1, position: "relative" }}>
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Carrusel */}
           <View>
@@ -276,9 +284,12 @@ const InformationLugarTuristico = ({ route }: Props) => {
               </ThemedView>
             ))}
           </ThemedView>
+
+
         </ScrollView>
-
-
+        <View className="fixed">
+          <ChatInput />
+        </View>
 
         <BottomSheet
           ref={sheetRef}
@@ -330,6 +341,9 @@ const InformationLugarTuristico = ({ route }: Props) => {
             </View>
           </BottomSheetView>
         </BottomSheet>
+
+        {/* input de chats */}
+
       </ThemedView>
     </>
 

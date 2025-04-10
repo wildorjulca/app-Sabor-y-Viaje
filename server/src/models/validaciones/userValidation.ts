@@ -6,7 +6,7 @@ export const userValidationRules = [
     .trim().bail() // Elimina espacios en blanco al inicio y final
     .notEmpty().withMessage('El nombre es obligatorio').bail()
     .isLength({ min: 2, max: 100 }).withMessage('El nombre debe tener entre 2 y 100 caracteres')
-   ,
+  ,
 
   // Validación para el email
   body('email')
@@ -20,10 +20,10 @@ export const userValidationRules = [
   body('password')
     .notEmpty().withMessage('La contraseña es obligatoria').bail()
     .isLength({ min: 5, max: 255 }).withMessage('La contraseña debe tener entre 5 y 255 caracteres'),
-    // .matches(/[A-Z]/).withMessage('Debe contener al menos una mayúscula')
-    // .matches(/[a-z]/).withMessage('Debe contener al menos una minúscula')
-    // .matches(/[0-9]/).withMessage('Debe contener al menos un número')
-    // .matches(/[^A-Za-z0-9]/).withMessage('Debe contener al menos un carácter especial'),
+  // .matches(/[A-Z]/).withMessage('Debe contener al menos una mayúscula')
+  // .matches(/[a-z]/).withMessage('Debe contener al menos una minúscula')
+  // .matches(/[0-9]/).withMessage('Debe contener al menos un número')
+  // .matches(/[^A-Za-z0-9]/).withMessage('Debe contener al menos un carácter especial'),
 
   // Validación opcional para la foto de perfil (URL)
   // body('profilePicture')
@@ -32,7 +32,16 @@ export const userValidationRules = [
   //   .isLength({ max: 255 }).withMessage('La URL no puede exceder 255 caracteres'),
 
   // Validación para el rol (si es necesario)
-//   body('role')
-//     .optional()
-//     .isIn(['admin', 'user']).withMessage('Rol no válido')
+  //   body('role')
+  //     .optional()
+  //     .isIn(['admin', 'user']).withMessage('Rol no válido')
 ];
+
+
+export const loginValidationRules = [
+  body('email')
+    .trim().bail()
+    .not().isEmpty().withMessage('El email es obligatorio').bail(),
+  body("contrasena")
+    .not().isEmpty().withMessage('La contraseña es obligatoria').bail()
+]

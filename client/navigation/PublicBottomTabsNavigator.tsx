@@ -3,7 +3,6 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FavoritosTbas from '@/app/Public/Favoritos';
 import IndexTbas from '@/app/Public/HomeTabs';
-import CarritoTabs from '@/app/Public/carrito';
 import ReservasTabs from '@/app/Public/reservas';
 import PerfillTabs from '@/app/Public/perfill';
 import { Ionicons } from '@expo/vector-icons';
@@ -37,6 +36,7 @@ const PublicBottomTabsNavigator = () => {
         name="HomeTabs"
         component={IndexTbas}
         options={{
+          title: 'Inicio',
           headerShown: false,
           tabBarIcon: ({ color, size }) => <Ionicons name="home" size={30} color={color} />,
         }}
@@ -69,13 +69,6 @@ const PublicBottomTabsNavigator = () => {
         }}
         name="Favoritos"
         component={FavoritosTbas}
-      />
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({ color, size }) => <Ionicons name="cart" size={30} color={color} />,
-        }}
-        name="carrito"
-        component={CarritoTabs}
       />
       <Tab.Screen
         options={{

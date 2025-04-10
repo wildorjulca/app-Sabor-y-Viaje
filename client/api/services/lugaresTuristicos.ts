@@ -56,3 +56,29 @@ export const getLugaresTuristicos = async (cod_region: number): Promise<LugaresT
     }
 
 }
+
+
+
+export const getFiltroByCategoria = async (idRegion: number, codCategoria: number): Promise<LugaresTuristicosResponse> => {
+    try {
+        const response = await axiosInstance.get(`/getLugaresTuristicosCategoria?idRegion=${idRegion}&codCategoria=${codCategoria}`)
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if(axiosError.response){
+            throw {
+                message: axiosError.message,
+                success: false,
+                status: axiosError.status,
+                errors: axiosError.response.data.errors
+            }
+        }
+        throw {
+            message: "Error de conexión",
+            status: 500,
+            success: false,
+        };
+
+    }
+
+}

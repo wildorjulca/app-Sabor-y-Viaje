@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { RegionType } from '@/interface/regiones'
 import FadeImage from './image/fade-image'
 import useLugarTuristicoStore from '@/storage/lugar-turisticos-store'
-
+  
 interface Props {
     region: RegionType
     active?: boolean
@@ -26,7 +26,7 @@ const FeaturedDestinationCard = ({ region, active, onPress }: Props) => {
     return (
         <Pressable
             onPress={() => onPress(region.id)}
-            className={`items-center space-y-3 bg-white dark:bg-gray-800 pt-0 pb-5 rounded-2xl shadow-lg w-64 overflow-hidden mr-4 
+            className={`mb-7 items-center space-y-3 bg-white dark:bg-gray-800 pt-0 pb-5 rounded-2xl shadow-lg w-64 overflow-hidden mr-4 
         ${active ? 'border-2 border-blue-500 dark:border-blue-400' : 'border-2 border-transparent'}`}
         >
             {/* Contenedor de imagen */}

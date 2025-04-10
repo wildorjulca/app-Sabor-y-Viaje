@@ -7,6 +7,9 @@ import Detalles from '@/app/Public/detalles';
 
 import SearchStack from '@/app/Public/search';
 import InformationLugarTuristico from '@/app/Public/informationLugarTuristico';
+import AuthScreen from '@/app/Public/auth';
+import { Image, Text, View } from 'react-native';
+import ThemedText from '@/presentation/shared/ThemedText';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +46,32 @@ const PublicStack = () => {
             <Stack.Screen
                 name='informationLugarTuristico'
                 component={InformationLugarTuristico}
+            />
+            <Stack.Screen
+                options={{
+                    // headerShown: false,
+                    headerShadowVisible: false,
+                    
+                    animation: "slide_from_right",
+                    title: "NEXUS",
+                    headerStyle: {
+                        backgroundColor: 'transparent' // Para un look completamente limpio
+                      },
+                    
+                    headerRight: () => (
+                        <View>
+                            <Image
+                                source={require("../assets/logoempresa.png")}
+                            />
+                        </View>
+                    )
+                }}
+                name='auth'
+                component={AuthScreen}
+
+
+
+
             />
         </Stack.Navigator>
 

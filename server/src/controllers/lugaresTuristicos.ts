@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { lugaresTuristicosGetAllService } from "../services/lugaresTuristicosService"
+import { lugaresByCatService, lugaresTuristicosGetAllService } from "../services/lugaresTuristicosService"
 
 
 
@@ -10,4 +10,10 @@ const getLugaresTuristicosCTRL = async(req:Request, res: Response)=>{
 
 }
 
-export { getLugaresTuristicosCTRL}
+const getLugaresTuristicosCategoriaCTRL = async(req:Request, res: Response)=>{
+    const {idRegion,codCategoria,} = req.query
+    const response = await lugaresByCatService(parseInt(idRegion as string),parseInt(codCategoria as string))
+    res.status(response.status).send(response)
+}
+
+export { getLugaresTuristicosCTRL,getLugaresTuristicosCategoriaCTRL}

@@ -28,7 +28,7 @@ export default function PeruDestinationCard({ titulo, descripcion, imagen, onPre
           colors={['transparent', 'rgba(23, 230, 51, 0.35)']}
           style={styles.gradient}
         >
-          <Text className='relative  text-white text-[30px] font-medium'>{titulo}</Text>
+          <Text className='relative  text-white text-[30px] font-WorkSans-SemiBold'>{titulo}</Text>
           <Text className='text-white'  numberOfLines={2}>
             {descripcion}
           </Text>

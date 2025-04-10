@@ -20,16 +20,12 @@ import { useNavigation } from '@react-navigation/native';
 import PeruDestinationCard from '@/components/PeruDestinationCard';
 import { StyleSheet } from 'react-native';
 
-import { lugaresTuristicosChachapoyas, lugaresTuristicosCusco } from '@/data/lugaresTuristicos';
-// import useLugarTuristicoStore from '@/storage/lugar-turisticos-store';
-import { router } from 'expo-router';
 import { useRegiones } from '@/hooks/hooks/regiones/useRegiones';
 import FeaturedDestinationCard from '@/components/FeaturedDestinationCard ';
-import { useLugaresTuristico } from '@/hooks/hooks/regiones/uselugaresTuristicos';
-import { obtenerImagenPrincipal } from '@/utils/obtenerImagenPrincipal';
 import ItemLugarTuristico from '@/components/itemLugarTuristico';
 import useLugarTuristicoStore from '@/storage/lugar-turisticos-store';
 import SkeletonLugarTuristicoItem from '@/components/Skeletons/SkeletonLugarTuristicoItem';
+import CategoryFilters from '@/components/categoria-filter';
 
 
 const MachuPicchuScreen = () => {
@@ -39,6 +35,14 @@ const MachuPicchuScreen = () => {
   const { data, error, loading } = useRegiones()
   // const { dataTuristicos, errorTuristico, loadingTuristico } = useLugaresTuristico()
   const { dataLugarTuristico, fetchFiltroRegion, loadingFiltroRegion } = useLugarTuristicoStore()
+
+  // const informacionObjeto = {
+  //   region: dataLugarTuristico[0].Region,
+  //   descripcion: dataLugarTuristico[0].Descripcion
+  // };
+  // console.log(informacionObjeto)
+
+  // Ejemplo de resultado: { titulo: "Cusco", descripcion: "Ciudad imperial..." }
 
   const lugaresPeru = [
     {
@@ -92,10 +96,6 @@ const MachuPicchuScreen = () => {
     fetchFiltroRegion(cod_region);
   }, [cod_region, fetchFiltroRegion]);
 
-
-
-
-
   return (
     <ThemedView className="flex-1">
       {/* Input Sticky con animación */}
@@ -134,7 +134,7 @@ const MachuPicchuScreen = () => {
             width={width}
             height={310}
             data={lugaresPeru}
-            // autoPlay
+            autoPlay
             autoPlayInterval={4000}
             onSnapToItem={(index) => setCurrentCardIndex(index)}
             renderItem={({ item }) => (
@@ -162,10 +162,10 @@ const MachuPicchuScreen = () => {
         </View>
 
         <View className="p-6">
-          <ThemedText className="text-2xl font-bold text-gray-800 mb-2">
+          <ThemedText className="text-2xl  text-gray-800 mb-2 font-WorkSans-Italic">
             Explora Machu Picchu
           </ThemedText>
-          <ThemedText className="text-base text-gray-600">
+          <ThemedText className="text-base text-gray-600 font-WorkSans-Italic">
             Descubre la maravilla inca en lo alto de los Andes peruanos. Este santuario histórico ofrece vistas impresionantes y una rica historia cultural.
           </ThemedText>
 
@@ -181,46 +181,45 @@ const MachuPicchuScreen = () => {
               active={item.id === cod_region}
               onPress={(id) => { handleRegionChange(id) }}
             />
-
           )}
 
         />
-        {loadingFiltroRegion &&
-          (
-            <View style={{ flex: 1, padding: 20 }}>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                {[...Array(6)].map((_, index) => (
-                  <SkeletonLugarTuristicoItem key={`skeleton-${index}`} />
-                ))}
-              </View>
-            </View>
-          )
-        }
+        <View>
+          <Text className='font-WorkSans-Bold text-[25px] relative  dark:text-gray-50'>{dataLugarTuristico[0]?.Region}</Text>
+          <Text numberOfLines={3} className='font-WorkSans-Italic text-[15px] relative p-3 dark:text-gray-50'>{dataLugarTuristico[0]?.Descripcion}</Text>
+          <CategoryFilters />
+        </View>
+
+
+        {loadingFiltroRegion && <SkeletonLugarTuristicoItem />}
+        {/* 
+        {loadingFiltroRegion && (
+          <View>
+            <Text className='font-WorkSans-Medium text-[25px] relative p-4 dark:text-gray-50'>{informacionObjeto.region}</Text>
+            <ThemedText>{informacionObjeto.descripcion}</ThemedText>
+          </View>
+        )} */}
         <FlatList
           data={dataLugarTuristico}
           numColumns={2} // Esto hace que se muestren 2 columnas
           columnWrapperStyle={{ justifyContent: 'space-between' }} // Espacio entre columnas
-          contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 10 }} // Padding general
+          contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 10 }} // Padding general
           renderItem={({ item }) => (
             <ItemLugarTuristico placeLugar={item} />
           )}
           keyExtractor={(item) => item.id.toString()}
-        // onEndReached={}
-        // onEndReachedThreshold={}
-        // ListFooterComponent={() => (
-        //   <ActivityIndicator size={40} />
-        // )}
+
         />
 
 
       </ScrollView>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         className="absolute bottom-10 right-6 bg-blue-500 p-4 rounded-full shadow-lg"
         onPress={() => navigation.navigate('searchStack')}
       >
         <Ionicons name="chatbox-ellipses" size={24} color="white" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </ThemedView>
   );
 };
