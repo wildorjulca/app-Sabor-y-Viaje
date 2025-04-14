@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 
 
 interface UserType {
-    id?: number; // Identificador único del usuario
+    id?: number; // Identificador único del usuario 
     name: string; // Nombre del usuario
     email: string; // Correo electrónico (único)
     password: string; // Contraseña (encriptada)
@@ -55,7 +55,7 @@ interface UserType {
         pool.close();
     }
 };
-
+                                                                                                                                                                                                                                                                                                                                                                
 
 const usuarioGetAllService = async (name: string, page: number, limit:number) => {
     const pool = await conexion(); 
@@ -64,7 +64,7 @@ const usuarioGetAllService = async (name: string, page: number, limit:number) =>
             .request()
             .input('name', sql.VarChar, name) 
             .input('page', sql.Int, page)
-            .input('limit', sql.Int, limit)
+            .input('limit', sql.Int, limit)                          
             .execute('getUserAll_PR'); 
         
         if (result.recordset.length > 0) {
@@ -89,4 +89,37 @@ const usuarioGetAllService = async (name: string, page: number, limit:number) =>
     }
 };
 
-export { usuarioGetAllService ,usuarioPostService};
+const loginUsuarioService =async(email: string, contrasena: string)=>{
+    let pool = await conexion();
+    try {
+        const result = await pool.request()
+        .input("tipo", sql.Int, 4)
+        .input("email", sql.VarChar, email)
+        .input("contrasena", sql.VarChar, contrasena)
+        .execute("usuario_PA")
+
+        if(result.recordset.length === 0){
+            return {
+                status: 401,
+                success: false,
+                mensaje: "Credenciales inválidas: la contraseña es incorrecta",
+            }
+        }
+        return { status: 200, succes: true, mensaje: "Login exitoso", data: result.recordset[0]}
+
+        
+    } catch (error) {
+        console.error("Error en loginUsuario:", error);
+        return {
+            status: 500,
+            success: false,
+            mensaje: "Error de servidor o en la base de datos",
+            error: error,
+        };
+    }finally{
+        pool.close()
+    }
+
+}
+
+export { usuarioGetAllService ,usuarioPostService,loginUsuarioService};

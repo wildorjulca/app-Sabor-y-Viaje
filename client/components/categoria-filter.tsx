@@ -3,46 +3,61 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import useLugarTuristicoStore from '@/storage/lugar-turisticos-store';
 
+type IoniconNames = React.ComponentProps<typeof Ionicons>['name'];
 const categories = [
+    {
+        id: 0,
+        name: 'Todos',
+        icon: 'umbrella-outline' as IoniconNames, // Asegúrate de que este ícono exista
+    },
     {
         id: 1,
         name: 'Playa',
-        icon: 'umbrella-outline' // Alternativa: 'water-outline'
+        icon: 'umbrella-outline' as IoniconNames,
     },
     {
         id: 2,
         name: 'Montaña',
-        icon: 'terrain-outline' // Alternativa: 'mountain-outline'
+        icon: 'terrain-outline' as IoniconNames, // Asegúrate de que este ícono exista
     },
     {
         id: 3,
         name: 'Arqueológico',
-        icon: 'time-outline' // Alternativa: 'archive-outline'
+        icon: 'time-outline' as IoniconNames,
     },
     {
         id: 4,
         name: 'Ciudad',
-        icon: 'business-outline' // Alternativa: 'city-outline' (si está disponible)
+        icon: 'business-outline' as IoniconNames,
     },
     {
         id: 5,
         name: 'Aventura',
-        icon: 'bicycle-outline' // Alternativa: 'rocket-outline'
-    }
+        icon: 'bicycle-outline' as IoniconNames,
+    },
 ];
 
 const CategoryFilters = () => {
 
-    const { fechFiltroByCategoria, dataLugarTuristico } = useLugarTuristicoStore()
+    const { fechFiltroByCategoria, dataLugarTuristico, fetchFiltroRegion } = useLugarTuristicoStore()
     const [selectedId, setSelectedId] = useState(1);
 
+
+    const onchangeFilterCategoria = (codCategoria: number) => {
+        if (selectedId === 0) {
+            fetchFiltroRegion(dataLugarTuristico[0].idRegion)
+        } else {
+            fechFiltroByCategoria(dataLugarTuristico[0].idRegion, codCategoria)
+        }
+    }
+
     return (
-        <View className="bg-white dark:bg-gray-800 pt-[20px] pb-[20px] shadow-md">
+        <View className="pt-[20px] pb-[20px] ">
             <Text className="text-lg font-bold text-gray-800 dark:text-gray-200 px-5 mb-3">
                 Filtrar por categoría
             </Text>
             <ScrollView
-                horizontal
+                horizontal 
                 showsHorizontalScrollIndicator={false}
                 className="px-5"
                 contentContainerStyle={{ alignItems: 'center' }}
@@ -54,8 +69,9 @@ const CategoryFilters = () => {
                         <TouchableOpacity
                             key={category.id}
                             onPress={() => {
-                                fechFiltroByCategoria(dataLugarTuristico[0].idRegion, category.id)
                                 setSelectedId(category.id)
+                                onchangeFilterCategoria(category.id)
+
                             }}
                             className={`flex-row items-center justify-center mr-3 px-6 py-[15px] rounded-full ${isActive
                                 ? 'bg-blue-600 dark:bg-blue-500'

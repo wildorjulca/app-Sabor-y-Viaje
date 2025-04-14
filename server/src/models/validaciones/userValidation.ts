@@ -41,7 +41,7 @@ export const userValidationRules = [
 export const loginValidationRules = [
   body('email')
     .trim().bail()
-    .not().isEmpty().withMessage('El email es obligatorio').bail(),
+    .notEmpty().withMessage('El email es obligatorio').bail(),
   body("contrasena")
-    .not().isEmpty().withMessage('La contraseña es obligatoria').bail()
+    .notEmpty().withMessage('La contraseña es obligatoria')
 ]

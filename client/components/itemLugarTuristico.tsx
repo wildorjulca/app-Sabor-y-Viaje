@@ -21,7 +21,7 @@ const ItemLugarTuristico = ({ placeLugar }: Props) => {
             key={placeLugar.id}
             className="w-[48%] mb-4"
             activeOpacity={0.9}
-            onPress={() => navigation.navigate('informationLugarTuristico', { id: 1 })}
+            onPress={() => navigation.navigate('informationLugarTuristico', { id: 2 })}
         >
             <View className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
                 {/* Sección de imagen */}

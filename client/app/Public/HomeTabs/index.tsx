@@ -6,43 +6,30 @@ import {
   Easing,
   TextInput,
   TouchableOpacity,
-  ScrollView,
   Image,
   Text,
   FlatList,
   ActivityIndicator,
+  StyleSheet
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import Carousel from 'react-native-reanimated-carousel';
 import ThemedText from '@/presentation/shared/ThemedText';
 import ThemedView from '@/presentation/shared/ThemedView';
 import { useNavigation } from '@react-navigation/native';
 import PeruDestinationCard from '@/components/PeruDestinationCard';
-import { StyleSheet } from 'react-native';
-
 import { useRegiones } from '@/hooks/hooks/regiones/useRegiones';
-import FeaturedDestinationCard from '@/components/FeaturedDestinationCard ';
 import ItemLugarTuristico from '@/components/itemLugarTuristico';
 import useLugarTuristicoStore from '@/storage/lugar-turisticos-store';
 import SkeletonLugarTuristicoItem from '@/components/Skeletons/SkeletonLugarTuristicoItem';
 import CategoryFilters from '@/components/categoria-filter';
-
+import FeaturedDestinationCard from '@/components/FeaturedDestinationCard ';
 
 const MachuPicchuScreen = () => {
   const navigation = useNavigation();
   const { width } = Dimensions.get('window');
 
-  const { data, error, loading } = useRegiones()
-  // const { dataTuristicos, errorTuristico, loadingTuristico } = useLugaresTuristico()
-  const { dataLugarTuristico, fetchFiltroRegion, loadingFiltroRegion } = useLugarTuristicoStore()
-
-  // const informacionObjeto = {
-  //   region: dataLugarTuristico[0].Region,
-  //   descripcion: dataLugarTuristico[0].Descripcion
-  // };
-  // console.log(informacionObjeto)
-
-  // Ejemplo de resultado: { titulo: "Cusco", descripcion: "Ciudad imperial..." }
+  const { data, error, loading } = useRegiones();
+  const { dataLugarTuristico, fetchFiltroRegion, loadingFiltroRegion } = useLugarTuristicoStore();
 
   const lugaresPeru = [
     {
@@ -71,11 +58,10 @@ const MachuPicchuScreen = () => {
     },
   ];
 
-  // Estados y referencias
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [cod_region, setCodRegion] = useState(1);
 
-  // Manejar la animación de fade para el input
   const handleScroll = (event: any) => {
     const currentPosition = event.nativeEvent.contentOffset.y;
     Animated.timing(fadeAnim, {
@@ -86,15 +72,86 @@ const MachuPicchuScreen = () => {
     }).start();
   };
 
-  const [cod_region, setCodRegion] = useState(1)
   const handleRegionChange = useCallback((id: number) => {
     setCodRegion(id);
   }, []);
 
-  // Efecto para cargar datos
   useEffect(() => {
     fetchFiltroRegion(cod_region);
   }, [cod_region, fetchFiltroRegion]);
+
+  const renderHeader = () => (
+    <>
+      {/* Sección del Carrusel de Tarjetas */}
+      <View className="w-full" style={{ height: 310 }}>
+        <Carousel
+          loop
+          width={width}
+          height={310}
+          data={lugaresPeru}
+          autoPlay
+          autoPlayInterval={4000}
+          onSnapToItem={(index) => setCurrentCardIndex(index)}
+          renderItem={({ item }) => (
+            <View style={styles.cardWrapper}>
+              <PeruDestinationCard
+                titulo={item.titulo}
+                descripcion={item.descripcion}
+                imagen={item.imagen}
+                onPress={() => console.log(`Selected: ${item.titulo}`)}
+              />
+            </View>
+          )}
+        />
+
+        {/* Indicadores del Carrusel */}
+        <View className="absolute bottom-5 w-full flex-row justify-center items-center">
+          {lugaresPeru.map((_, index) => (
+            <View
+              key={index}
+              className={`w-2 h-2 rounded-full mx-1 ${currentCardIndex === index ? 'bg-green-500 scale-125' : 'bg-gray-300'}`}
+            />
+          ))}
+        </View>
+      </View>
+
+      <View className="p-6">
+        <ThemedText className="text-2xl text-gray-800 mb-2 font-WorkSans-Italic">
+          Explora Machu Picchu
+        </ThemedText>
+        <ThemedText className="text-base text-gray-600 font-WorkSans-Italic">
+          Descubre la maravilla inca en lo alto de los Andes peruanos. Este santuario histórico ofrece vistas impresionantes y una rica historia cultural.
+        </ThemedText>
+      </View>
+
+      {/* FlatList horizontal de regiones */}
+      <FlatList
+        horizontal
+        data={data}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <FeaturedDestinationCard
+            region={item}
+            active={item.id === cod_region}
+            onPress={(id) => handleRegionChange(id)}
+          />
+        )}
+        keyExtractor={(item) => item.id.toString()}
+      />
+
+      <View>
+        <Text className='font-WorkSans-Bold text-[25px] relative dark:text-gray-50'>
+          {dataLugarTuristico[0]?.Region}
+        </Text>
+        <Text numberOfLines={3} className='font-WorkSans-Italic text-[15px] relative p-3 dark:text-gray-50'>
+          {dataLugarTuristico[0]?.Descripcion}
+        </Text>
+        <CategoryFilters />
+      </View>
+
+      {loadingFiltroRegion && <SkeletonLugarTuristicoItem />}
+    </>
+  );
 
   return (
     <ThemedView className="flex-1">
@@ -114,112 +171,27 @@ const MachuPicchuScreen = () => {
         }}
       >
         <TextInput
-          onPress={() => navigation.navigate('searchStack')}
+          onPressIn={() => navigation.navigate('searchStack')}
           className="bg-gray-100 dark:bg-slate-700 rounded-full px-5 py-3 text-base"
           placeholder="Buscar..."
           placeholderTextColor="#999"
+          editable={false}
         />
       </Animated.View>
 
-
-      <ScrollView
+      {/* Lista principal */}
+      <FlatList
+        ListHeaderComponent={renderHeader}
+        data={dataLugarTuristico}
+        numColumns={2}
+        columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={styles.contentContainer}
+        renderItem={({ item }) => <ItemLugarTuristico placeLugar={item} />}
+        keyExtractor={(item) => item.id.toString()}
         scrollEventThrottle={16}
         onScroll={handleScroll}
-        className="flex-1"
-      >
-        {/* Sección del Carrusel de Tarjetas */}
-        <View className="w-full" style={{ height: 310 }}>
-          <Carousel
-            loop
-            width={width}
-            height={310}
-            data={lugaresPeru}
-            autoPlay
-            autoPlayInterval={4000}
-            onSnapToItem={(index) => setCurrentCardIndex(index)}
-            renderItem={({ item }) => (
-              <View style={styles.cardWrapper}>
-                <PeruDestinationCard
-                  titulo={item.titulo}
-                  descripcion={item.descripcion}
-                  imagen={item.imagen}
-                  onPress={() => console.log(`Selected: ${item.titulo}`)}
-                />
-              </View>
-            )}
-          />
-
-          {/* Indicadores del Carrusel */}
-          <View className="absolute bottom-5 w-full flex-row justify-center items-center">
-            {lugaresPeru.map((_, index) => (
-              <View
-                key={index}
-                className={`w-2 h-2 rounded-full mx-1 ${currentCardIndex === index ? 'bg-green-500 scale-125' : 'bg-gray-300'
-                  }`}
-              />
-            ))}
-          </View>
-        </View>
-
-        <View className="p-6">
-          <ThemedText className="text-2xl  text-gray-800 mb-2 font-WorkSans-Italic">
-            Explora Machu Picchu
-          </ThemedText>
-          <ThemedText className="text-base text-gray-600 font-WorkSans-Italic">
-            Descubre la maravilla inca en lo alto de los Andes peruanos. Este santuario histórico ofrece vistas impresionantes y una rica historia cultural.
-          </ThemedText>
-
-        </View>
-
-        {/* Seccion de las tarjetas del lugares */}
-        <FlatList
-          data={data}
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          renderItem={({ item }) => (
-            <FeaturedDestinationCard region={item}
-              active={item.id === cod_region}
-              onPress={(id) => { handleRegionChange(id) }}
-            />
-          )}
-
-        />
-        <View>
-          <Text className='font-WorkSans-Bold text-[25px] relative  dark:text-gray-50'>{dataLugarTuristico[0]?.Region}</Text>
-          <Text numberOfLines={3} className='font-WorkSans-Italic text-[15px] relative p-3 dark:text-gray-50'>{dataLugarTuristico[0]?.Descripcion}</Text>
-          <CategoryFilters />
-        </View>
-
-
-        {loadingFiltroRegion && <SkeletonLugarTuristicoItem />}
-        {/* 
-        {loadingFiltroRegion && (
-          <View>
-            <Text className='font-WorkSans-Medium text-[25px] relative p-4 dark:text-gray-50'>{informacionObjeto.region}</Text>
-            <ThemedText>{informacionObjeto.descripcion}</ThemedText>
-          </View>
-        )} */}
-        <FlatList
-          data={dataLugarTuristico}
-          numColumns={2} // Esto hace que se muestren 2 columnas
-          columnWrapperStyle={{ justifyContent: 'space-between' }} // Espacio entre columnas
-          contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 10 }} // Padding general
-          renderItem={({ item }) => (
-            <ItemLugarTuristico placeLugar={item} />
-          )}
-          keyExtractor={(item) => item.id.toString()}
-
-        />
-
-
-      </ScrollView>
-
-      {/* <TouchableOpacity
-        className="absolute bottom-10 right-6 bg-blue-500 p-4 rounded-full shadow-lg"
-        onPress={() => navigation.navigate('searchStack')}
-      >
-        <Ionicons name="chatbox-ellipses" size={24} color="white" />
-      </TouchableOpacity> */}
+        showsVerticalScrollIndicator={false}
+      />
     </ThemedView>
   );
 };
@@ -227,6 +199,13 @@ const MachuPicchuScreen = () => {
 const styles = StyleSheet.create({
   cardWrapper: {
     flex: 1,
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  contentContainer: {
+    paddingBottom: 20,
   },
 });
 

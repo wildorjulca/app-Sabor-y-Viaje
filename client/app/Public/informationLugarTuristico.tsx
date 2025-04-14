@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Dimensions, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Dimensions, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Image } from 'react-native';
 import { EvilIcons, Ionicons } from '@expo/vector-icons';
@@ -12,8 +12,7 @@ import { LugarDetalle } from '@/interface/lugaresTuristicos';
 import ThemedText from '@/presentation/shared/ThemedText';
 import Avatar from '@/components/avatar/GenerationAvatar';
 import ChatInput from '@/components/ChatInput';
-
-
+import LottieView from 'lottie-react-native';
 
 const imagenes = [
   'https://img.freepik.com/free-photo/tourist-carrying-baggage_23-2151747383.jpg?t=st=1743692777~exp=1743696377~hmac=53fc6e51bc7b4308c84fe5d3515583a36be16fae51f10fc6c271c9e5e3959746&w=1380',
@@ -31,11 +30,8 @@ type Props = {
 };
 
 const InformationLugarTuristico = ({ route }: Props) => {
-  
-  
-  const { informacionLugar, loading, error, fetchLugares } = useInformationTuristicoStore()
-  const id = Number(route.params.id)
-
+  const { informacionLugar, loading, error, fetchLugares } = useInformationTuristicoStore();
+  const id = Number(route.params.id);
 
   const sheetRef = useRef<BottomSheet>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +39,6 @@ const InformationLugarTuristico = ({ route }: Props) => {
   const { width: screenWidth } = Dimensions.get('window');
   const navigation = useNavigation();
   const [activeIndex, setActiveIndex] = useState(0);
-
 
   const openGallery = () => {
     setIsOpen(true);
@@ -63,10 +58,9 @@ const InformationLugarTuristico = ({ route }: Props) => {
     fetchLugares(id);
   }, [id, fetchLugares]);
 
-
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: "Sin título",
+      title: loading ? "Cargando..." : (informacionLugar?.sitio?.[0]?.NombreLugar || "Lugar Turístico"),
       headerRight: () => (
         <View className='flex-row pl-[5px] items-center gap-[2px]'>
           <EvilIcons name="share-google" size={40} color="#007aff" />
@@ -79,41 +73,41 @@ const InformationLugarTuristico = ({ route }: Props) => {
     });
   }, [loading, informacionLugar?.sitio?.[0]?.NombreLugar, navigation]);
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <LottieView
+          source={require('../../assets/loading.json')}
+          autoPlay
+          loop
+          style={{ width: 500, height: 500 }}
+        />
+      </View>
+    );
+  }
 
-  //  --- Condicionales después de hooks ---
-  //  if (loading) {
-  //   return (
-  //     <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //       <ActivityIndicator size="large" />
-  //     </ThemedView>
-  //   );
-  // }
+  if (error) {
+    return (
+      <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ThemedText>Error al cargar los datos: {error.message}</ThemedText>
+      </ThemedView>
+    );
+  }
 
-  // if (error) {
-  //   return (
-  //     <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //       <ThemedText>Error: {error.message}</ThemedText>
-  //     </ThemedView>
-  //   );
-  // }
+  if (!informacionLugar || !informacionLugar.sitio || informacionLugar.sitio.length === 0) {
+    return (
+      <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ThemedText>No se encontraron datos para este lugar turístico</ThemedText>
+      </ThemedView>
+    );
+  }
 
-  // if (!informacionLugar) {
-  //   return (
-  //     <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //       <ThemedText>No hay datos disponibles</ThemedText>
-  //     </ThemedView>
-  //   );
-  // }
-
-  const handleSendMessage = (message: string) => {
-    console.log('Mensaje enviado:', message);
-    // Aquí enviarías el mensaje a tu backend
-  };
+  const lugar = informacionLugar.sitio[0];
 
   return (
     <>
-      <ThemedView style={{ flex: 1, position: "relative" }}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+      <ThemedView style={{position: "relative"}}>
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {/* Carrusel */}
           <View>
             <Carousel
@@ -145,7 +139,7 @@ const InformationLugarTuristico = ({ route }: Props) => {
             </View>
 
             <TouchableOpacity
-              className='absolute bottom-3 right-3'
+              className='absolute bottom-3 right-3 z-10'
               onPress={openGallery}
             >
               <View className='bg-[#000000d8] flex-row gap-2 items-center px-3 py-2 rounded-lg'>
@@ -154,8 +148,30 @@ const InformationLugarTuristico = ({ route }: Props) => {
               </View>
             </TouchableOpacity>
           </View>
-          <ThemedView className="w-full px-4 py-6">
-            <ThemedText type='h2' className=" text-gray-900 dark:text-white mb-6 mt-2">
+
+          {/* Información del lugar */}
+          <ThemedView className="px-4 py-6">
+            <ThemedText type="h1" className="mb-2">{lugar.NombreLugar}</ThemedText>
+            <ThemedText className="text-gray-600 dark:text-gray-300 mb-4">
+              {lugar.Descripcion}
+            </ThemedText>
+
+            <View className="flex-row items-center mb-4">
+              <Ionicons name="location-outline" size={20} color="#3b82f6" />
+              <ThemedText className="ml-2">{lugar.Ubicacion}</ThemedText>
+            </View>
+
+            <View className="flex-row items-center mb-6">
+              <Ionicons name="star" size={20} color="#f59e0b" />
+              <ThemedText className="ml-2 font-medium">
+                {lugar.ValoracionPromedio} ({lugar.CantidadComentarios} reseñas)
+              </ThemedText>
+            </View>
+          </ThemedView>
+
+          {/* Opiniones */}
+          <ThemedView className="w-full px-4 py-6 relative">
+            <ThemedText type='h2' className="text-gray-900 dark:text-white mb-6 mt-2">
               Opiniones de visitantes
             </ThemedText>
 
@@ -164,7 +180,6 @@ const InformationLugarTuristico = ({ route }: Props) => {
                 key={item.IdComentario}
                 className="mb-8 pb-6 pl-6 pr-6 bg-white shadow-xl rounded-xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
               >
-                {/* Header del comentario - Se mantiene igual */}
                 <View className="flex-row items-start gap-4 mb-4 relative top-2">
                   <View className="w-14 h-14 rounded-full bg-gradient-to-br from-primary-300 to-primary-500 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center overflow-hidden shadow-inner">
                     {item.FotoPerfil ? (
@@ -190,7 +205,6 @@ const InformationLugarTuristico = ({ route }: Props) => {
                       </ThemedText>
                     </View>
 
-                    {/* Valoración con estrellas - Se mantiene igual */}
                     <View className="flex-row items-center mt-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <Ionicons
@@ -209,12 +223,10 @@ const InformationLugarTuristico = ({ route }: Props) => {
                   </View>
                 </View>
 
-                {/* Cuerpo del comentario - Se mantiene igual */}
                 <ThemedText className="text-gray-700 dark:text-gray-300 text-base leading-relaxed mt-4">
                   {item.Comentario}
                 </ThemedText>
 
-                {/* Galería de imágenes - Se mantiene igual */}
                 {imagenes.length > 0 && (
                   <View className="mt-4">
                     <View className="flex-row flex-wrap gap-2">
@@ -250,7 +262,6 @@ const InformationLugarTuristico = ({ route }: Props) => {
                   </View>
                 )}
 
-                {/* Acciones del comentario - Se mantiene igual */}
                 <View className="flex-row justify-between mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
                   <View className="flex-row items-center space-x-2">
                     <TouchableOpacity
@@ -284,13 +295,7 @@ const InformationLugarTuristico = ({ route }: Props) => {
               </ThemedView>
             ))}
           </ThemedView>
-
-
         </ScrollView>
-        <View className="fixed">
-          <ChatInput />
-        </View>
-
         <BottomSheet
           ref={sheetRef}
           index={-1}
@@ -321,7 +326,7 @@ const InformationLugarTuristico = ({ route }: Props) => {
             </View>
 
             <View className="flex-row flex-wrap justify-between">
-              {imagenes.map((img, index) => (
+              {informacionLugar.imagenes?.map((img, index) => (
                 <TouchableOpacity
                   key={index}
                   className="w-[48%] mb-4 rounded-xl overflow-hidden shadow-sm"
@@ -332,7 +337,7 @@ const InformationLugarTuristico = ({ route }: Props) => {
                   activeOpacity={0.7}
                 >
                   <Image
-                    source={{ uri: img }}
+                    source={{ uri: img.Imagen }}
                     className="w-full h-40 rounded-xl"
                     resizeMode="cover"
                   />
@@ -341,16 +346,15 @@ const InformationLugarTuristico = ({ route }: Props) => {
             </View>
           </BottomSheetView>
         </BottomSheet>
-
-        {/* input de chats */}
-
       </ThemedView>
+      <View style={{position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 1000}}>
+        <ChatInput />
+      </View>
     </>
-
   );
 };
 
-export default InformationLugarTuristico
+export default InformationLugarTuristico;
 
 const styles = StyleSheet.create({
   image: {

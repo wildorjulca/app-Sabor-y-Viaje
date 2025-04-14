@@ -25,18 +25,39 @@ export interface LugareTuristicoType {
 
 }
 
+// export interface LugaresTuristicoPorRegionType {
+//     id: number,
+//     Nombre : string,
+//     Descripcion: string,
+//     Longitud? : number,
+//     PrecioEntrada?: number,
+//     HorarioApertura: string,
+//     idRegion: number,
+//     Region: string,
+//     idCategoria: number ,
+//     Categoria: string,
+//     Imagenes : [],
+// }
+
+
+interface Imagen {
+    ImagenId: number;
+    ImagenUrl: string;
+    ImagenOrden: number;
+    ImagenEsPrincipal: boolean;
+}
 export interface LugaresTuristicoPorRegionType {
-    id: number,
-    Nombre : string,
-    Descripcion: string,
-    Longitud? : number,
-    PrecioEntrada?: number,
-    HorarioApertura: string,
-    idRegion: number,
-    Region: string,
-    idCategoria: number ,
-    Categoria: string,
-    Imagenes : [],
+    Categoria: string;
+    Descripcion: string;
+    HorarioApertura: string;
+    Imagenes: Imagen[] | null;
+    Longitud: number | undefined;
+    Nombre: string;
+    PrecioEntrada: number;
+    Region: string;
+    id: number;
+    idCategoria: number;
+    idRegion: number;
 }
 
 

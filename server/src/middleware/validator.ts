@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 
 
 const validate = (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body)
     const errors = validationResult(req)
     console.log(errors)
     if (!errors.isEmpty()) {

@@ -6,15 +6,15 @@ import { useNavigation } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 
 const ChatInput = () => {
-    const navigation = useNavigation()
-    const { estado } = useAuthStore((state) => state)
+    const navigation = useNavigation();
+    const { estado } = useAuthStore((state) => state);
     const [message, setMessage] = React.useState('');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const handleSend = () => {
         if (message.trim()) {
             if (estado === false) {
-                navigation.navigate("auth")
+                navigation.navigate("auth");
             } else {
                 console.log('Mensaje enviado:', message);
                 setMessage('');
@@ -24,7 +24,6 @@ const ChatInput = () => {
     };
 
     const pickImageAsync = async () => {
-        // Solicitar permisos
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
             alert('Se necesitan permisos para acceder a la galería');
@@ -32,32 +31,27 @@ const ChatInput = () => {
         }
 
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images, // Corregido aquí
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
-
         if (!result.canceled && result.assets && result.assets.length > 0) {
             setSelectedImage(result.assets[0].uri);
         }
-    }
-
-
+    };
     return (
         <View
-            className="bg-white pt-3 px-4 pb-5 border-t border-gray-200 w-full
-                     dark:bg-slate-800 dark:border-gray-700
-                     shadow-lg shadow-gray-300/50 dark:shadow-gray-900/50"
+            className=""
         >
             {/* Mostrar imagen seleccionada */}
             {selectedImage && (
                 <View style={styles.imagePreviewContainer}>
-                    <Image 
-                        source={{ uri: selectedImage }} 
-                        style={styles.selectedImage} 
+                    <Image
+                        source={{ uri: selectedImage }}
+                        style={styles.selectedImage}
                     />
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.removeImageButton}
                         onPress={() => setSelectedImage(null)}
                     >
@@ -67,30 +61,26 @@ const ChatInput = () => {
             )}
 
             <View
-                className="flex-row items-end bg-gray-100 rounded-2xl px-4 py-2 
-                           dark:bg-gray-700
-                           border border-gray-200 dark:border-gray-600
-                           transition-all duration-200 focus-within:border-blue-400"
+                className="flex-row  bg-gray-100 px-2 pt-5 pb-2 dark:bg-gray-900"
             >
-                {/* Botón adjuntar - AHORA CON LA FUNCIÓN DE SELECCIÓN DE IMAGEN */}
-                <TouchableOpacity 
+                {/* Botón adjuntar */}
+                <TouchableOpacity
                     className="mr-3 pb-1.5"
                     activeOpacity={0.7}
                     accessibilityLabel="Adjuntar archivo"
-                    accessibilityRole="button"
-                    onPress={pickImageAsync} // Añadido aquí
+                    onPress={pickImageAsync}
                 >
                     <MaterialIcons
                         name="attach-file"
                         size={24}
                         color="#6b7280"
-                        className="dark:text-gray-300"
+                        className="dark:text-blue-700"
                     />
                 </TouchableOpacity>
 
                 {/* Campo de texto */}
                 <TextInput
-                    className="flex-1 py-1 px-2 text-gray-800 dark:text-gray-100 max-h-32"
+                    className="flex-1 py-[15px] shadow-2xl bg-white rounded-3xl px-2 text-gray-800 dark:text-gray-100 max-h-32 dark:bg-slate-800"
                     placeholder="Escribe un mensaje..."
                     placeholderTextColor="#9ca3af"
                     value={message}
@@ -103,11 +93,10 @@ const ChatInput = () => {
                 />
 
                 {/* Botón emojis */}
-                {!message && (
-                    <TouchableOpacity 
+                {!message  && (
+                    <TouchableOpacity
                         className="mx-3 pb-1.5"
                         activeOpacity={0.7}
-                        accessibilityLabel="Abrir emojis"
                     >
                         <FontAwesome
                             name="smile-o"
@@ -119,23 +108,22 @@ const ChatInput = () => {
                 )}
 
                 {/* Botón enviar/microfono */}
-                <TouchableOpacity 
-                    className={`p-2 rounded-full ml-2 ${message ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+                <TouchableOpacity
+                    className={`p-2 rounded-full ml-2 ${message ? 'bg-blue-500' : 'bg-green-400 dark:bg-green-500'}`}
                     activeOpacity={0.8}
                     onPress={handleSend}
-                    accessibilityLabel={message ? "Enviar mensaje" : "Grabar audio"}
                 >
                     {message ? (
                         <MaterialCommunityIcons
                             name="send"
                             size={20}
-                            color="white"
+                            color="#fff"
                         />
                     ) : (
                         <FontAwesome
                             name="microphone"
                             size={20}
-                            color={message ? 'white' : '#6b7280'}
+                            color={message ? 'white' : '#fff'}
                             className="dark:text-gray-300"
                         />
                     )}
@@ -146,6 +134,7 @@ const ChatInput = () => {
 };
 
 const styles = StyleSheet.create({
+
     imagePreviewContainer: {
         position: 'relative',
         marginBottom: 10,

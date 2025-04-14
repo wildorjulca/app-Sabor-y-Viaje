@@ -1,24 +1,5 @@
 import sql from 'mssql'
 
-// const dbSetting = {
-//     user: 'wildor',
-//     password: 'wildor12345',
-//     server: 'localhost',
-//     database: 'webstore',
-//     options: {
-//         encrypt:true,
-//         trustServerCertificate:true,
-//     }
-// }
-
-// export const getConnection = async () => {
-//     const pool = await slq.connect(dbSetting)
-//     const result = await pool.request().query("SELECT * FROM persona")
-//     console.log(result)
-
-// }
-
-
 
 export const conexion = () => {
     const config = {

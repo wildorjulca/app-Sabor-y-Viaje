@@ -27,7 +27,7 @@ export const useInformationTuristicoStore = create<Store>((set) => ({
             const data = await getInformationLugarTuristico(id);
             setTimeout(() => {
                 set({ informacionLugar: { sitio: data.lugar, imagenes: data.imagenes, comentarios: data.comentarios }, loading: false });
-            }, 3000);
+            }, 1000);
         } catch (error) {
             const err = error as AxiosError<BackendError>;
             set({

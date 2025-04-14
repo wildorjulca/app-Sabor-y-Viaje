@@ -8,28 +8,29 @@ export interface BackendError {
     errors: any[]
 }
 
-interface LugaresTuristico {
-    id: number,
-    Nombre : string,
-    Descripcion: string,
-    Longitud? : number,
-    PrecioEntrada?: number,
-    HorarioApertura: string,
-    idRegion: string,
-    Region: string,
-    idCategoria: number ,
-    Categoria: string,
-    Imagenes : [],
-}
+// interface LugaresTuristico {
+//     id: number,
+//     Nombre : string,
+//     Descripcion: string,
+//     Longitud? : number | undefined,
+//     PrecioEntrada?: number,
+//     HorarioApertura: string,
+//     idRegion: string,
+//     Region: string,
+//     idCategoria: number ,
+//     Categoria: string,
+//     Imagenes : [],
+// }
 interface LugaresTuristicosResponse  {
     message: string;
     success: boolean;
     status: number;
-    data: LugaresTuristico[] 
+    data: LugaresTuristicoPorRegionType[] 
 }
 
 import { AxiosError } from "axios"
 import { axiosInstance } from "../axiosInstance "
+import { LugaresTuristicoPorRegionType } from "@/interface/lugaresTuristicos";
 
 
 

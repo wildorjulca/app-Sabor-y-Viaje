@@ -1,13 +1,55 @@
 import { View, TextInput, TouchableOpacity, Image, Text } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import ThemedView from '@/presentation/shared/ThemedView';
 import ThemedText from '@/presentation/shared/ThemedText';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { authService, BackendError } from '@/api/services/authService';
+import FlashMessage, { showMessage } from "react-native-flash-message"
 
 const AuthScreen = () => {
+  const [objUser, setobjUser] = useState({ email: "pedroruiz@email.com", contrasena: "1d2345                                   " })
+  const [errros, seterrros] = useState({ email: "", contrasena: "" })
+
+  const handleAuthRegister = async () => {
+    try {
+      const response = await authService(objUser.email, objUser.contrasena)
+      console.log(response)
+    } catch (error) {
+      const backendError = error as BackendError;
+
+      if(backendError.status === 401){
+        console.log(backendError)
+        showMessage({
+          message: "Mensaje",
+          description: "Credenciales incorrectas ",
+          type: "danger",
+        });
+      }
+      if(backendError.status === 400){
+     
+      backendError.errors?.forEach(item => {
+        seterrros(prev => ({
+          ...prev,
+          [item.path]: item.msg?? ""
+        }))
+      })
+      }
+      
+      // if (backendError.status === 400) {
+      // 
+      // const objectErrors = validacionUsuario(backendError.errors)
+      // }
+    }
+  }
+
+
+  const onchangeValues = (name: string, value: string)=>{
+
+  }
+  console.log(errros)
   return (
-    <ThemedView className="flex-1 dark:bg-slate-900">
-      <View className="flex-1 px-6">
+    <ThemedView className="dark:bg-slate-900">
+      <FlashMessage position="top" />
+      <View className="px-6">
         {/* Encabezado simple */}
         <View className="mb-10 items-center">
           <Image
@@ -34,6 +76,7 @@ const AuthScreen = () => {
             // keyboardType="email-address"
             // autoCapitalize="none"
             />
+            {errros.email && (<Text className='text-red-500'>{errros.email}</Text>)}
           </View>
 
           {/* Input Contraseña */}
@@ -45,10 +88,12 @@ const AuthScreen = () => {
               placeholderTextColor="#9CA3AF"
             // secureTextEntry
             />
+            {errros.contrasena && (<Text className='text-red-500'>{errros.contrasena}</Text>)}
           </View>
 
           {/* Botón Principal */}
           <TouchableOpacity
+            onPress={handleAuthRegister}
             className="py-5 rounded-full bg-blue-500 items-center justify-center"
             activeOpacity={0.8}
           >

@@ -5,7 +5,6 @@ import { AxiosError } from "axios";
 import { create } from 'zustand';
 
 interface State {
-
     dataLugarTuristico: LugaresTuristicoPorRegionType[]; // Definimos el tipo de datos
     fetchFiltroRegion: (cod_region: number) => void,
     fechFiltroByCategoria: (idRegion: number, codCategoria: number) => void,
@@ -21,9 +20,10 @@ const useLugarTuristicoStore = create<State>((set, get) => ({
     error: null,
     dataLugarTuristico: [],
     fetchFiltroRegion: async (cod_region: number): Promise<void> => {
-        set({ loadingFiltroRegion: true, dataLugarTuristico: [] })
+        set({ loadingFiltroRegion: true})
         try {
             const resoponse = await getLugaresTuristicos(cod_region)
+            console.log(resoponse.data)
             if (resoponse.data.length > 0) {
                 setTimeout(() => {
                     set({ dataLugarTuristico: resoponse.data, loadingFiltroRegion: false, error: null })
