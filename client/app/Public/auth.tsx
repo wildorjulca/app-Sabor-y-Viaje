@@ -1,51 +1,42 @@
-import { View, TextInput, TouchableOpacity, Image, Text } from 'react-native';
-import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Image, Text, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import ThemedView from '@/presentation/shared/ThemedView';
 import ThemedText from '@/presentation/shared/ThemedText';
-import { authService, BackendError } from '@/api/services/authService';
+import { authService, } from '@/api/services/authService';
 import FlashMessage, { showMessage } from "react-native-flash-message"
+import { useAuthStore } from '@/storage/authenticacion-staore';
+import { useNavigation } from "@react-navigation/native";
 
 const AuthScreen = () => {
-  const [objUser, setobjUser] = useState({ email: "pedroruiz@email.com", contrasena: "1d2345                                   " })
+  const navigation = useNavigation()
+  const { authenticateUser, error, isAuthenticated, loading, user } = useAuthStore((state) => state)
+
+  const [objUser, setobjUser] = useState({ email: "", contrasena: "" })
   const [errros, seterrros] = useState({ email: "", contrasena: "" })
 
-  const handleAuthRegister = async () => {
-    try {
-      const response = await authService(objUser.email, objUser.contrasena)
-      console.log(response)
-    } catch (error) {
-      const backendError = error as BackendError;
-
-      if(backendError.status === 401){
-        console.log(backendError)
-        showMessage({
-          message: "Mensaje",
-          description: "Credenciales incorrectas ",
-          type: "danger",
-        });
-      }
-      if(backendError.status === 400){
-     
-      backendError.errors?.forEach(item => {
-        seterrros(prev => ({
-          ...prev,
-          [item.path]: item.msg?? ""
-        }))
-      })
-      }
-      
-      // if (backendError.status === 400) {
-      // 
-      // const objectErrors = validacionUsuario(backendError.errors)
-      // }
+  useEffect(() => {
+    if (isAuthenticated === true) {
+      setTimeout(() => {
+        navigation.goBack()
+      }, 1000);
     }
+  }, [isAuthenticated])
+
+  const handleAuthRegister = async () => {
+    authenticateUser(objUser.email, objUser.contrasena)
   }
 
 
-  const onchangeValues = (name: string, value: string)=>{
-
+  const onchangeValues = (name: string, value: string) => {
+    setobjUser(prev => ({
+      ...prev,
+      [name]: value
+    }))
+    seterrros((prev) => ({
+      ...prev,
+      [name]: ""
+    }))
   }
-  console.log(errros)
   return (
     <ThemedView className="dark:bg-slate-900">
       <FlashMessage position="top" />
@@ -63,7 +54,6 @@ const AuthScreen = () => {
             Ingresa tus datos para continuar
           </ThemedText>
         </View>
-
         {/* Formulario simple */}
         <View className="w-full mb-8">
           {/* Input Email */}
@@ -73,10 +63,11 @@ const AuthScreen = () => {
                         text-gray-900 dark:text-white mb-2"
               placeholder="Correo electrónico"
               placeholderTextColor="#9CA3AF"
+              onChangeText={(text) => onchangeValues("email", text)}
             // keyboardType="email-address"
             // autoCapitalize="none"
             />
-            {errros.email && (<Text className='text-red-500'>{errros.email}</Text>)}
+            {error.email && (<Text className='text-red-500'>{error.email}</Text>)}
           </View>
 
           {/* Input Contraseña */}
@@ -86,20 +77,25 @@ const AuthScreen = () => {
                         text-gray-900 dark:text-white"
               placeholder="Contraseña"
               placeholderTextColor="#9CA3AF"
+              onChangeText={(text) => onchangeValues("contrasena", text)}
             // secureTextEntry
             />
-            {errros.contrasena && (<Text className='text-red-500'>{errros.contrasena}</Text>)}
+            {error.contrasena && (<Text className='text-red-500'>{error.contrasena}</Text>)}
           </View>
 
           {/* Botón Principal */}
           <TouchableOpacity
             onPress={handleAuthRegister}
-            className="py-5 rounded-full bg-blue-500 items-center justify-center"
+            className={`py-5 rounded-full items-center justify-center ${loading ? "bg-gray-400" : "bg-blue-500"
+              }`}
             activeOpacity={0.8}
+            disabled={loading}
           >
-            <ThemedText className="text-white font-medium">
-              Ingresar
-            </ThemedText>
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <ThemedText className="text-white font-medium">Ingresar</ThemedText>
+            )}
           </TouchableOpacity>
         </View>
 

@@ -31,6 +31,7 @@ const MachuPicchuScreen = () => {
   const { data, error, loading } = useRegiones();
   const { dataLugarTuristico, fetchFiltroRegion, loadingFiltroRegion } = useLugarTuristicoStore();
 
+
   const lugaresPeru = [
     {
       id: 1,

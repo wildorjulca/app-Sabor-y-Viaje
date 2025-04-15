@@ -31,6 +31,7 @@ type Props = {
 
 const InformationLugarTuristico = ({ route }: Props) => {
   const { informacionLugar, loading, error, fetchLugares } = useInformationTuristicoStore();
+  
   const id = Number(route.params.id);
 
   const sheetRef = useRef<BottomSheet>(null);
@@ -347,7 +348,7 @@ const InformationLugarTuristico = ({ route }: Props) => {
           </BottomSheetView>
         </BottomSheet>
       </ThemedView>
-      <View style={{position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 1000}}>
+      <View style={{position: 'absolute', left: 0, right: 0, bottom: 80, zIndex: 1000}}>
         <ChatInput />
       </View>
     </>

@@ -22,7 +22,6 @@ export const getRegiones = async (): Promise<RegionResponse> => {
         return response.data;
     } catch (error) {
         const axiosError = error as AxiosError<BackendError>;
-        console.log(axiosError)
         if (axiosError.response) {
             throw {
                 status: axiosError.response.status,

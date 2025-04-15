@@ -38,9 +38,12 @@ app.use("/api", routerInfoLugarTuristico);
 
 // 7. Iniciar servidor con configuración mejorada
 const PORT = 3030;
-const server = app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, () => {
     console.log(`🚀 Servidor ejecutándose en http://localhost:${PORT}`);
 });
+// const server = app.listen(PORT, '0.0.0.0', () => {
+//     console.log(`🚀 Servidor ejecutándose en http://localhost:${PORT}`);
+// });
 
 // 8. Configuración de timeouts (importante para Node.js 22+)
 server.keepAliveTimeout = 30000; // 30 segundos

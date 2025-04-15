@@ -6,14 +6,14 @@ import { useNavigation } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 
 const ChatInput = () => {
-    const navigation = useNavigation();
-    const { estado } = useAuthStore((state) => state);
+    const navigation: any = useNavigation();
+    const { isAuthenticated } = useAuthStore((state) => state);
     const [message, setMessage] = React.useState('');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const handleSend = () => {
         if (message.trim()) {
-            if (estado === false) {
+            if (isAuthenticated === false) {
                 navigation.navigate("auth");
             } else {
                 console.log('Mensaje enviado:', message);
@@ -93,7 +93,7 @@ const ChatInput = () => {
                 />
 
                 {/* Botón emojis */}
-                {!message  && (
+                {!message && (
                     <TouchableOpacity
                         className="mx-3 pb-1.5"
                         activeOpacity={0.7}

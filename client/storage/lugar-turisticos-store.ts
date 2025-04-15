@@ -23,7 +23,6 @@ const useLugarTuristicoStore = create<State>((set, get) => ({
         set({ loadingFiltroRegion: true})
         try {
             const resoponse = await getLugaresTuristicos(cod_region)
-            console.log(resoponse.data)
             if (resoponse.data.length > 0) {
                 setTimeout(() => {
                     set({ dataLugarTuristico: resoponse.data, loadingFiltroRegion: false, error: null })
