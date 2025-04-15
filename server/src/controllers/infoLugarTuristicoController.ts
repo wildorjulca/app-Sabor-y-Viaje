@@ -3,7 +3,9 @@ import { infolugaresTuristico } from "../services/infoLugarTuristicoService";
 
 
 const infoLugarTuristicosCTRL = async (req: Request, res: Response) => {
-    const response = await infolugaresTuristico()
+    const idLugarTuristico = req.params.id
+
+    const response = await infolugaresTuristico(parseInt(idLugarTuristico as string))
     if (response.succes && response.data) {
         const lugar = response.data[0] ?? [];   // Primera tabla: Lugares turísticos
         const imagenes = response.data[1] ?? [];  // Segunda tabla: Imágenes

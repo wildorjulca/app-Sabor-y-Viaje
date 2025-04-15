@@ -61,7 +61,7 @@ const ChatInput = () => {
             )}
 
             <View
-                className="flex-row  bg-gray-100 px-2 pt-5 pb-2 dark:bg-gray-900"
+                className="flex-row  items-center bg-gray-100 px-2 pt-5 pb-2 dark:bg-gray-900"
             >
                 {/* Botón adjuntar */}
                 <TouchableOpacity
@@ -109,7 +109,7 @@ const ChatInput = () => {
 
                 {/* Botón enviar/microfono */}
                 <TouchableOpacity
-                    className={`p-2 rounded-full ml-2 ${message ? 'bg-blue-500' : 'bg-green-400 dark:bg-green-500'}`}
+                    className={`p-2 rounded-full ml-2 ${message ? 'bg-blue-500' : 'bg-blue-500 dark:bg-blue-900'}`}
                     activeOpacity={0.8}
                     onPress={handleSend}
                 >

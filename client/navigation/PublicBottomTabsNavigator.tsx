@@ -79,6 +79,7 @@ const PublicBottomTabsNavigator = () => {
       />
       <Tab.Screen
         options={{
+          headerShown:false,
           tabBarIcon: ({ color, size }) => <Ionicons name="person-circle" size={30} color={color} />,
         }}
         name="perfill"

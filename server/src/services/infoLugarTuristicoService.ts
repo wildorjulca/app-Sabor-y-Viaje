@@ -10,12 +10,13 @@ interface ServiceResponse {
     data?: any[];
 
 }
-const infolugaresTuristico = async ():Promise<ServiceResponse> => {
+const infolugaresTuristico = async (idLugarTuristico: number):Promise<ServiceResponse> => {
     let pool: sql.ConnectionPool | undefined
     try {
         pool = await conexion()
 
         const result = await pool.request()
+            .input("idLugarTuristico",sql.Int, idLugarTuristico)
             .execute("informationLT_PA")
 
         if (result.recordsets) {

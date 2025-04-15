@@ -3,7 +3,7 @@ import { infoLugarTuristicosCTRL } from "../controllers/infoLugarTuristicoContro
 
 const routerInfoLugarTuristico = express.Router()
 
-routerInfoLugarTuristico.get("/infoLugarTuristico", infoLugarTuristicosCTRL)
+routerInfoLugarTuristico.get("/infoLugarTuristico/:id", infoLugarTuristicosCTRL)
 
 
 export { routerInfoLugarTuristico}

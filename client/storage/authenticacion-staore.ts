@@ -25,9 +25,9 @@ export interface BackendErrorauth {
 // Define la interfaz para la tienda de Zustand
 interface Store {
     loading: boolean;
-    isAuthenticated: boolean; // Estado de autenticación
-    user: UserTypes; // Información del usuario
-    error: { [key: string]: string }; // Mapeo de errores de validación
+    isAuthenticated: boolean; 
+    user: UserTypes; 
+    error: { [key: string]: string }; 
     authenticateUser: (email: string, contrasena: string) => Promise<void>
 }
 

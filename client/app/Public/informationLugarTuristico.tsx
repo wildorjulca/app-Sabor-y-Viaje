@@ -13,6 +13,7 @@ import ThemedText from '@/presentation/shared/ThemedText';
 import Avatar from '@/components/avatar/GenerationAvatar';
 import ChatInput from '@/components/ChatInput';
 import LottieView from 'lottie-react-native';
+import NoHayComentarios from '@/components/comments/NoHayComentarios';
 
 const imagenes = [
   'https://img.freepik.com/free-photo/tourist-carrying-baggage_23-2151747383.jpg?t=st=1743692777~exp=1743696377~hmac=53fc6e51bc7b4308c84fe5d3515583a36be16fae51f10fc6c271c9e5e3959746&w=1380',
@@ -31,7 +32,7 @@ type Props = {
 
 const InformationLugarTuristico = ({ route }: Props) => {
   const { informacionLugar, loading, error, fetchLugares } = useInformationTuristicoStore();
-  
+
   const id = Number(route.params.id);
 
   const sheetRef = useRef<BottomSheet>(null);
@@ -104,10 +105,11 @@ const InformationLugarTuristico = ({ route }: Props) => {
   }
 
   const lugar = informacionLugar.sitio[0];
+  const comentarios = informacionLugar.comentarios
 
   return (
     <>
-      <ThemedView style={{position: "relative"}}>
+      <ThemedView style={{ position: "relative" }}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           {/* Carrusel */}
           <View>
@@ -150,153 +152,135 @@ const InformationLugarTuristico = ({ route }: Props) => {
             </TouchableOpacity>
           </View>
 
-          {/* Información del lugar */}
-          <ThemedView className="px-4 py-6">
-            <ThemedText type="h1" className="mb-2">{lugar.NombreLugar}</ThemedText>
-            <ThemedText className="text-gray-600 dark:text-gray-300 mb-4">
-              {lugar.Descripcion}
-            </ThemedText>
-
-            <View className="flex-row items-center mb-4">
-              <Ionicons name="location-outline" size={20} color="#3b82f6" />
-              <ThemedText className="ml-2">{lugar.Ubicacion}</ThemedText>
-            </View>
-
-            <View className="flex-row items-center mb-6">
-              <Ionicons name="star" size={20} color="#f59e0b" />
-              <ThemedText className="ml-2 font-medium">
-                {lugar.ValoracionPromedio} ({lugar.CantidadComentarios} reseñas)
-              </ThemedText>
-            </View>
-          </ThemedView>
 
           {/* Opiniones */}
           <ThemedView className="w-full px-4 py-6 relative">
-            <ThemedText type='h2' className="text-gray-900 dark:text-white mb-6 mt-2">
-              Opiniones de visitantes
-            </ThemedText>
-
-            {informacionLugar.comentarios?.map((item) => (
-              <ThemedView
-                key={item.IdComentario}
-                className="mb-8 pb-6 pl-6 pr-6 bg-white shadow-xl rounded-xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
-              >
-                <View className="flex-row items-start gap-4 mb-4 relative top-2">
-                  <View className="w-14 h-14 rounded-full bg-gradient-to-br from-primary-300 to-primary-500 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center overflow-hidden shadow-inner">
-                    {item.FotoPerfil ? (
-                      <Avatar nombre={item.Usuario} />
-                    ) : (
-                      <Text className="text-2xl font-bold text-white">
-                        {item.Usuario.charAt(0).toUpperCase()}
-                      </Text>
-                    )}
-                  </View>
-
-                  <View className="flex-1">
-                    <View className="flex-row justify-between items-baseline">
-                      <ThemedText className="text-lg font-semibold text-gray-900 dark:text-white">
-                        {item.Usuario}
-                      </ThemedText>
-                      <ThemedText className="text-xs text-gray-400 dark:text-gray-400">
-                        {new Date(item.FechaComentario).toLocaleDateString('es-ES', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric'
-                        })}
-                      </ThemedText>
-                    </View>
-
-                    <View className="flex-row items-center mt-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Ionicons
-                          key={star}
-                          name={item.Valoracion ? (star <= item.Valoracion ? 'star' : 'star-outline') : 'star-outline'}
-                          size={18}
-                          color={item.Valoracion ? (star <= item.Valoracion ? '#F59E0B' : '#D1D5DB') : '#D1D5DB'}
-                        />
-                      ))}
-                      {item.Valoracion && (
-                        <ThemedText className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-300">
-                          {item.Valoracion}.0
-                        </ThemedText>
+            {informacionLugar.comentarios && informacionLugar.comentarios.length > 0 ? (
+              informacionLugar.comentarios.map((item) => (
+                <ThemedView
+                  key={item.IdComentario}
+                  className="mb-8 pb-6 pl-6 pr-6 bg-white shadow-xl rounded-xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700"
+                >
+                  <View className="flex-row items-start gap-4 mb-4 relative top-2">
+                    <View className="w-14 h-14 rounded-full bg-gradient-to-br from-primary-300 to-primary-500 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center overflow-hidden shadow-inner">
+                      {item.FotoPerfil ? (
+                        <Avatar nombre={item.Usuario} />
+                      ) : (
+                        <Text className="text-2xl font-bold text-white">
+                          {item.Usuario.charAt(0).toUpperCase()}
+                        </Text>
                       )}
                     </View>
-                  </View>
-                </View>
 
-                <ThemedText className="text-gray-700 dark:text-gray-300 text-base leading-relaxed mt-4">
-                  {item.Comentario}
-                </ThemedText>
+                    <View className="flex-1">
+                      <View className="flex-row justify-between items-baseline">
+                        <ThemedText className="text-lg font-semibold text-gray-900 dark:text-white">
+                          {item.Usuario}
+                        </ThemedText>
+                        <ThemedText className="text-xs text-gray-400 dark:text-gray-400">
+                          {new Date(item.FechaComentario).toLocaleDateString('es-ES', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric'
+                          })}
+                        </ThemedText>
+                      </View>
 
-                {imagenes.length > 0 && (
-                  <View className="mt-4">
-                    <View className="flex-row flex-wrap gap-2">
-                      {imagenes.slice(0, 3).map((img, index) => (
-                        <TouchableOpacity
-                          key={index}
-                          className="relative"
-                          activeOpacity={0.8}
-                        >
-                          <Image
-                            source={{ uri: img }}
-                            className="w-24 h-24 rounded-lg object-cover"
-                            resizeMode="cover"
+                      <View className="flex-row items-center mt-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Ionicons
+                            key={star}
+                            name={item.Valoracion ? (star <= item.Valoracion ? 'star' : 'star-outline') : 'star-outline'}
+                            size={18}
+                            color={item.Valoracion ? (star <= item.Valoracion ? '#F59E0B' : '#D1D5DB') : '#D1D5DB'}
                           />
-                          {index === 2 && imagenes.length > 3 && (
-                            <View className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
-                              <ThemedText className="text-white font-bold text-lg">
-                                +{imagenes.length - 3}
-                              </ThemedText>
-                            </View>
-                          )}
-                        </TouchableOpacity>
-                      ))}
+                        ))}
+                        {item.Valoracion && (
+                          <ThemedText className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-300">
+                            {item.Valoracion}.0
+                          </ThemedText>
+                        )}
+                      </View>
                     </View>
+                  </View>
 
-                    {imagenes.length > 3 && (
-                      <TouchableOpacity className="mt-2">
-                        <ThemedText className="text-primary-500 dark:text-primary-400 text-sm font-medium">
-                          Ver todas las fotos ({imagenes.length})
+                  <ThemedText className="text-gray-700 dark:text-gray-300 text-base leading-relaxed mt-4">
+                    {item.Comentario}
+                  </ThemedText>
+
+                  {imagenes.length > 0 && (
+                    <View className="mt-4">
+                      <View className="flex-row flex-wrap gap-2">
+                        {imagenes.slice(0, 3).map((img, index) => (
+                          <TouchableOpacity
+                            key={index}
+                            className="relative"
+                            activeOpacity={0.8}
+                          >
+                            <Image
+                              source={{ uri: img }}
+                              className="w-24 h-24 rounded-lg object-cover"
+                              resizeMode="cover"
+                            />
+                            {index === 2 && imagenes.length > 3 && (
+                              <View className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
+                                <ThemedText className="text-white font-bold text-lg">
+                                  +{imagenes.length - 3}
+                                </ThemedText>
+                              </View>
+                            )}
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+
+                      {imagenes.length > 3 && (
+                        <TouchableOpacity className="mt-2">
+                          <ThemedText className="text-primary-500 dark:text-primary-400 text-sm font-medium">
+                            Ver todas las fotos ({imagenes.length})
+                          </ThemedText>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  )}
+
+                  <View className="flex-row justify-between mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <View className="flex-row items-center space-x-2">
+                      <TouchableOpacity
+                        className="flex-row items-center px-3 py-1.5 rounded-full bg-rose-50 dark:bg-gray-700"
+                        activeOpacity={0.7}
+                      >
+                        <Ionicons name="heart-outline" size={16} color="#f43f5e" />
+                        <ThemedText className="ml-1.5 text-sm font-bold text-rose-500 dark:text-gray-300">
+                          12
                         </ThemedText>
                       </TouchableOpacity>
-                    )}
-                  </View>
-                )}
 
-                <View className="flex-row justify-between mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-                  <View className="flex-row items-center space-x-2">
-                    <TouchableOpacity
-                      className="flex-row items-center px-3 py-1.5 rounded-full bg-rose-50 dark:bg-gray-700"
-                      activeOpacity={0.7}
-                    >
-                      <Ionicons name="heart-outline" size={16} color="#f43f5e" />
-                      <ThemedText className="ml-1.5 text-sm font-bold text-rose-500 dark:text-gray-300">
-                        12
-                      </ThemedText>
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        className="flex-row items-center px-3 py-1.5 rounded-full bg-blue-50 dark:bg-gray-700"
+                        activeOpacity={0.7}
+                      >
+                        <Ionicons name="chatbubble-outline" size={16} color="#3b82f6" />
+                        <ThemedText className="ml-1.5 text-sm font-bold text-[#3b82f6] dark:text-gray-300">
+                          Responder
+                        </ThemedText>
+                      </TouchableOpacity>
+                    </View>
 
                     <TouchableOpacity
-                      className="flex-row items-center px-3 py-1.5 rounded-full bg-blue-50 dark:bg-gray-700"
+                      className="p-1.5 rounded-full bg-blue-100 dark:bg-gray-700"
                       activeOpacity={0.7}
                     >
-                      <Ionicons name="chatbubble-outline" size={16} color="#3b82f6" />
-                      <ThemedText className="ml-1.5 text-sm font-bold text-[#3b82f6] dark:text-gray-300">
-                        Responder
-                      </ThemedText>
+                      <Ionicons name="share-social-outline" size={16} color="#3b82f6" />
                     </TouchableOpacity>
                   </View>
-
-                  <TouchableOpacity
-                    className="p-1.5 rounded-full bg-blue-100 dark:bg-gray-700"
-                    activeOpacity={0.7}
-                  >
-                    <Ionicons name="share-social-outline" size={16} color="#3b82f6" />
-                  </TouchableOpacity>
-                </View>
-              </ThemedView>
-            ))}
+                </ThemedView>
+              ))
+            ) : (
+             <NoHayComentarios />
+            )}
           </ThemedView>
         </ScrollView>
+
         <BottomSheet
           ref={sheetRef}
           index={-1}
@@ -348,7 +332,7 @@ const InformationLugarTuristico = ({ route }: Props) => {
           </BottomSheetView>
         </BottomSheet>
       </ThemedView>
-      <View style={{position: 'absolute', left: 0, right: 0, bottom: 80, zIndex: 1000}}>
+      <View style={{ position: 'absolute', left: 0, right: 0, bottom: 80, zIndex: 1000 }}>
         <ChatInput />
       </View>
     </>

@@ -12,7 +12,7 @@ export interface BackendError {
 
 export const getInformationLugarTuristico = async (id: number): Promise<ApiResponseLugarTuristico> => {
     try {
-        const response = await axiosInstance.get(`/infoLugarTuristico`);
+        const response = await axiosInstance.get(`/infoLugarTuristico/${id}`);
         return response.data as ApiResponseLugarTuristico
     } catch (error) {
         const axiosError = error as AxiosError<BackendError>;
