@@ -51,13 +51,13 @@ const PublicStack = () => {
                 options={{
                     // headerShown: false,
                     headerShadowVisible: false,
-                    
+
                     animation: "slide_from_right",
                     title: "NEXUS",
                     headerStyle: {
                         backgroundColor: 'transparent' // Para un look completamente limpio
-                      },
-                    
+                    },
+
                     headerRight: () => (
                         <View>
                             <Image
@@ -69,10 +69,8 @@ const PublicStack = () => {
                 name='auth'
                 component={AuthScreen}
 
-
-
-
             />
+            
         </Stack.Navigator>
 
     );

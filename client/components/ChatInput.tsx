@@ -4,21 +4,42 @@ import { MaterialIcons, FontAwesome, MaterialCommunityIcons } from '@expo/vector
 import { useAuthStore } from '@/storage/authenticacion-staore';
 import { useNavigation } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import { newComentarioService } from '@/api/services/comentariosService';
+import { useInformationTuristicoStore } from '@/storage/information-lugar-store';
 
 const ChatInput = () => {
     const navigation: any = useNavigation();
-    const { isAuthenticated } = useAuthStore((state) => state);
+    const { isAuthenticated, user } = useAuthStore((state) => state);
+    const { informacionLugar, fetchLugares } = useInformationTuristicoStore((state) => state);
+
     const [message, setMessage] = React.useState('');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    const handleSend = () => {
+
+
+    const handleSend = async () => {
         if (message.trim()) {
             if (isAuthenticated === false) {
                 navigation.navigate("auth");
             } else {
                 console.log('Mensaje enviado:', message);
-                setMessage('');
-                Keyboard.dismiss();
+                console.log(user)
+
+                const comentario = {
+                    cod_usuario: user.id,
+                    cod_lugarTuristico: informacionLugar.sitio[0].LugarID,
+                    contenido: message
+                };
+                const response = await newComentarioService(comentario);
+
+                if (response.success) {
+                    fetchLugares(informacionLugar.sitio[0].LugarID)
+                    console.log("Comentario registrado:", response.message);
+                    setMessage('');
+                    Keyboard.dismiss();
+                } else {
+                    console.error(`Error (${response.status}):`, response.message);
+                }
             }
         }
     };

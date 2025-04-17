@@ -32,10 +32,6 @@ const AuthScreen = () => {
       ...prev,
       [name]: value
     }))
-    seterrros((prev) => ({
-      ...prev,
-      [name]: ""
-    }))
   }
   return (
     <ThemedView className="dark:bg-slate-900">

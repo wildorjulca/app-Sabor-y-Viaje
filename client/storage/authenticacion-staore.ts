@@ -72,9 +72,6 @@ export const useAuthStore = create<Store>((set, get) => ({
                     description: `Hola, ${response.data.Nombre}`,
                     type: "success",
                 });
-                // const navigation = useNavigation()
-                // navigation.goBack()
-
             }
 
 

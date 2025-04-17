@@ -5,6 +5,7 @@ import { routerRegiones } from "./routers/regionesRouter";
 import { routerCategoriasLugares } from "./routers/categoriasLugares";
 import { routerLugaresTuristicos } from "./routers/lugaresTuristicos";
 import { routerInfoLugarTuristico } from "./routers/infoLugarTuristico";
+import { routerComentarios } from "./routers/comentariosRouter";
 
 const app = express();
 
@@ -34,6 +35,8 @@ app.use("/api", routerRegiones);
 app.use("/api", routerCategoriasLugares);
 app.use("/api", routerLugaresTuristicos);
 app.use("/api", routerInfoLugarTuristico);
+app.use("/api", routerComentarios);
+
 
 
 // 7. Iniciar servidor con configuración mejorada
