@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "strict": true,
+      "jsx": "react-native",
+      "target": "esnext",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "baseUrl": ".",
+      "paths": {
+        "@/*": [
+          "./*"
+        ]
+      }
+    }
+  }
+  

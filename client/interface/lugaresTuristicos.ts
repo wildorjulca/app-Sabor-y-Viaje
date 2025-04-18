@@ -25,20 +25,6 @@ export interface LugareTuristicoType {
 
 }
 
-// export interface LugaresTuristicoPorRegionType {
-//     id: number,
-//     Nombre : string,
-//     Descripcion: string,
-//     Longitud? : number,
-//     PrecioEntrada?: number,
-//     HorarioApertura: string,
-//     idRegion: number,
-//     Region: string,
-//     idCategoria: number ,
-//     Categoria: string,
-//     Imagenes : [],
-// }
-
 
 interface Imagen {
     ImagenId: number;
@@ -78,6 +64,14 @@ export interface LugarDetalle {
     Region: string;
     Categoria: string;
 }
+interface FotosComentarios {
+
+}
+interface FotoComentario {
+    FotoComentario: string;
+    FechaFoto: string;
+  }
+  
 export interface Comentario  {
     IdComentario: number;
     Comentario: string;
@@ -87,6 +81,7 @@ export interface Comentario  {
     FotoPerfil: string | null;
     Valoracion: number | null; 
     FechaValoracion: string | null; 
+    FotosComentarios: FotoComentario[];
   };
   
 
@@ -96,5 +91,5 @@ export interface ApiResponseLugarTuristico {
     message: string;
     lugar: LugarDetalle[];
     imagenes: ImagenLugar[];
-    comentarios?: Comentario[];
+    comentarios?: Comentario[] | [];
 }

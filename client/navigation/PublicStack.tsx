@@ -10,6 +10,7 @@ import InformationLugarTuristico from '@/app/Public/informationLugarTuristico';
 import AuthScreen from '@/app/Public/auth';
 import { Image, Text, View } from 'react-native';
 import ThemedText from '@/presentation/shared/ThemedText';
+import HistoriasUsuario from '@/app/Public/galeriaPublicacionesUser';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,13 @@ const PublicStack = () => {
             />
             <Stack.Screen
                 options={{
+                    headerShown: false, // Oculta el encabezado
+                }}
+                name='GaleriaPublicacionesUser'
+                component={HistoriasUsuario}
+            />
+            <Stack.Screen
+                options={{
                     // headerShown: false,
                     headerShadowVisible: false,
 
@@ -70,7 +78,7 @@ const PublicStack = () => {
                 component={AuthScreen}
 
             />
-            
+
         </Stack.Navigator>
 
     );

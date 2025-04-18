@@ -2,8 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, Dimensions, StyleSheet, Activ
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Image } from 'react-native';
 import { EvilIcons, Ionicons } from '@expo/vector-icons';
-import { Link, router, useNavigation } from 'expo-router';
-import VideoModal from '@/components/VideoPlayer';
+import { useNavigation } from 'expo-router';
 import ThemedView from '@/presentation/shared/ThemedView';
 import Carousel from 'react-native-reanimated-carousel';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -14,7 +13,6 @@ import Avatar from '@/components/avatar/GenerationAvatar';
 import ChatInput from '@/components/ChatInput';
 import LottieView from 'lottie-react-native';
 import NoHayComentarios from '@/components/comments/NoHayComentarios';
-import { Video } from 'expo-av';
 
 const imagenes = [
   'https://img.freepik.com/free-photo/tourist-carrying-baggage_23-2151747383.jpg?t=st=1743692777~exp=1743696377~hmac=53fc6e51bc7b4308c84fe5d3515583a36be16fae51f10fc6c271c9e5e3959746&w=1380',
@@ -34,6 +32,8 @@ type Props = {
 const InformationLugarTuristico = ({ route }: Props) => {
   const { informacionLugar, loading, error, fetchLugares } = useInformationTuristicoStore();
   const [modalVisible, setModalVisible] = useState(false);
+
+
 
   const id = Number(route.params.id);
 
@@ -153,9 +153,8 @@ const InformationLugarTuristico = ({ route }: Props) => {
                 </TouchableOpacity>
               </View>
 
-
               {/* Opiniones */}
-              <ThemedView className="w-full px-4 py-6 relative">
+              <ThemedView className="w-full px-4 py-6 relative top-5">
                 {informacionLugar.comentarios && informacionLugar.comentarios.length > 0 ? (
                   informacionLugar.comentarios.map((item) => (
                     <ThemedView
@@ -205,28 +204,28 @@ const InformationLugarTuristico = ({ route }: Props) => {
                         </View>
                       </View>
 
-                      <ThemedText className="text-gray-700 dark:text-gray-300 text-base leading-relaxed mt-4">
+                      <ThemedText numberOfLines={3} className="text-gray-700 dark:text-gray-300 text-base leading-relaxed mt-4">
                         {item.Comentario}
                       </ThemedText>
 
-                      {imagenes.length > 0 && (
+                      {item.FotosComentarios && item.FotosComentarios.length > 0 && (
                         <View className="mt-4">
                           <View className="flex-row flex-wrap gap-2">
-                            {imagenes.slice(0, 3).map((img, index) => (
+                            {item.FotosComentarios.slice(0, 3).map((img, index) => (
                               <TouchableOpacity
                                 key={index}
                                 className="relative"
                                 activeOpacity={0.8}
                               >
                                 <Image
-                                  source={{ uri: img }}
+                                  source={{ uri: img.FotoComentario }}
                                   className="w-24 h-24 rounded-lg object-cover"
                                   resizeMode="cover"
                                 />
-                                {index === 2 && imagenes.length > 3 && (
+                                {index === 2 && item.FotosComentarios.length > 3 && (
                                   <View className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
                                     <ThemedText className="text-white font-bold text-lg">
-                                      +{imagenes.length - 3}
+                                      +{item.FotosComentarios.length - 3}
                                     </ThemedText>
                                   </View>
                                 )}
@@ -234,10 +233,10 @@ const InformationLugarTuristico = ({ route }: Props) => {
                             ))}
                           </View>
 
-                          {imagenes.length > 3 && (
-                            <TouchableOpacity className="mt-2">
+                          {item.FechaComentario.length > 3 && (
+                            <TouchableOpacity className="mt-2" onPress={() => navigation.navigate('GaleriaPublicacionesUser')}>
                               <ThemedText className="text-primary-500 dark:text-primary-400 text-sm font-medium">
-                                Ver todas las fotos ({imagenes.length})
+                                Ver todas las fotos ({item.FotosComentarios.length})
                               </ThemedText>
                             </TouchableOpacity>
                           )}
@@ -280,6 +279,8 @@ const InformationLugarTuristico = ({ route }: Props) => {
                   <NoHayComentarios />
                 )}
               </ThemedView>
+
+
             </ScrollView>
 
             <BottomSheet
