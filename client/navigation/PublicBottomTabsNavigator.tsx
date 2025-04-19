@@ -43,6 +43,7 @@ const PublicBottomTabsNavigator = () => {
       />
       <Tab.Screen
         options={{
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <View>
               <Ionicons name="heart" size={30} color={color} />

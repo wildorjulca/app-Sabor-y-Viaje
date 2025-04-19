@@ -1,4 +1,5 @@
 import { useInformationTuristicoStore } from "@/storage/information-lugar-store";
+import { Ionicons } from "@expo/vector-icons";
 import { NavigationProp } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
 import { View, Image, Text, TouchableOpacity, Dimensions } from "react-native";
@@ -63,7 +64,9 @@ const HistoriasUsuario = ({ navigation }) => {
         }, intervalo);
 
         return () => clearInterval(intervaloProgreso);
-    }, [indiceHistoria, pausado]);
+        // }, [indiceHistoria, pausado]);
+    }, []);
+
 
     const siguienteHistoria = () => {
         if (indiceHistoria < usuario.historias.length - 1) {
@@ -118,17 +121,16 @@ const HistoriasUsuario = ({ navigation }) => {
                         </Text>
                     </View>
                 </View>
-
                 {/* Barras de progreso */}
                 <View className="flex-row mt-4 mx-4">
                     {usuario.historias.map((_, index) => (
                         <View
                             key={index}
-                            className="h-1.5 rounded-full mx-0.5 bg-gray-500/50 flex-1 overflow-hidden"
+                            className="h-[3px] rounded-full mx-0.5 bg-gray-500/50 flex-1 overflow-hidden"
                         >
                             {index === indiceHistoria && (
                                 <View
-                                    className="h-full rounded-full bg-white"
+                                    className="h-full rounded-full bg-slate-50"
                                     style={{ width: `${progreso}%` }}
                                 />
                             )}
@@ -161,7 +163,8 @@ const HistoriasUsuario = ({ navigation }) => {
                 className="absolute top-12 right-5 w-10 h-10 justify-center items-center rounded-full z-20"
                 onPress={cerrarHistorias}
             >
-                <Text className="text-white font-bold text-xl">×</Text>
+                <Ionicons name="close" color={"#ffff"} size={25} />
+                {/* <Text className="text-white font-bold text-xl">×</Text> */}
             </TouchableOpacity>
 
             {/* Contador de historias */}

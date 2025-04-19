@@ -1,14 +1,15 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
 import { BackendError, getInformationLugarTuristico } from '@/api/services/informationTuristico';
-import { Comentario, ImagenLugar, LugarDetalle } from '@/interface/lugaresTuristicos';
+import { Comentario, FotoComentario, ImagenLugar, LugarDetalle } from '@/interface/lugaresTuristicos';
 
 
 interface Store {
     informacionLugar: {
         sitio: LugarDetalle[],
         imagenes: ImagenLugar[],
-        comentarios?: Comentario[]
+        comentarios?: Comentario[],
+        imagenesUsuarios: FotoComentario[] 
     };
     loading: boolean;
     error: BackendError | null;
@@ -17,7 +18,7 @@ interface Store {
 }
 
 export const useInformationTuristicoStore = create<Store>((set) => ({
-    informacionLugar: { sitio: [], imagenes: [] },
+    informacionLugar: { sitio: [], imagenes: [], comentarios: [], imagenesUsuarios: [] },
     loading: false,
     error: null,
 
@@ -26,7 +27,16 @@ export const useInformationTuristicoStore = create<Store>((set) => ({
         try {
             const data = await getInformationLugarTuristico(id);
             setTimeout(() => {
-                set({ informacionLugar: { sitio: data.lugar, imagenes: data.imagenes, comentarios: data.comentarios }, loading: false });
+                set({
+                    informacionLugar:
+                    {
+                        sitio: data.lugar,
+                        imagenes: data.imagenes,
+                        comentarios: data.comentarios,
+                        imagenesUsuarios: data.imagenesUsuarios
+                    },
+                    loading: false
+                });
             }, 1000);
         } catch (error) {
             const err = error as AxiosError<BackendError>;
@@ -42,5 +52,5 @@ export const useInformationTuristicoStore = create<Store>((set) => ({
         }
     },
 
-    clearPlaceData: () => set({ informacionLugar: { imagenes: [], sitio: [] }, error: null }),
+    clearPlaceData: () => set({ informacionLugar: { imagenes: [], sitio: [], comentarios:[], imagenesUsuarios: [] }, error: null }),
 }));

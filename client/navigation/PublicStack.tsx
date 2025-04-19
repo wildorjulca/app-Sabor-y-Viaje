@@ -6,11 +6,13 @@ import Detalles from '@/app/Public/detalles';
 // import searchStack from '@/app/Public/search';
 
 import SearchStack from '@/app/Public/search';
-import InformationLugarTuristico from '@/app/Public/informationLugarTuristico';
+// import InformationLugarTuristico from '@/app/Public/informationLugarTuristico';
 import AuthScreen from '@/app/Public/auth';
 import { Image, Text, View } from 'react-native';
 import ThemedText from '@/presentation/shared/ThemedText';
 import HistoriasUsuario from '@/app/Public/galeriaPublicacionesUser';
+import InformationLugarTuristico from '@/app/Public/informationLugarTuristico';
+import GaleriaVideoLugar from '@/app/Public/galeriaVideoLugar';
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +47,9 @@ const PublicStack = () => {
                 component={SearchStack}
             />
             <Stack.Screen
+            options={{
+                headerShown: false
+            }}
                 name='informationLugarTuristico'
                 component={InformationLugarTuristico}
             />
@@ -55,30 +60,27 @@ const PublicStack = () => {
                 name='GaleriaPublicacionesUser'
                 component={HistoriasUsuario}
             />
+             <Stack.Screen
+             
+                name='GaleriaVideoLugar'
+                component={GaleriaVideoLugar}
+            />
             <Stack.Screen
                 options={{
                     // headerShown: false,
                     headerShadowVisible: false,
-
+                    headerShown: false,
                     animation: "slide_from_right",
                     title: "NEXUS",
                     headerStyle: {
                         backgroundColor: 'transparent' // Para un look completamente limpio
                     },
 
-                    headerRight: () => (
-                        <View>
-                            <Image
-                                source={require("../assets/logoempresa.png")}
-                            />
-                        </View>
-                    )
                 }}
                 name='auth'
                 component={AuthScreen}
 
             />
-
         </Stack.Navigator>
 
     );

@@ -9,6 +9,8 @@ const infoLugarTuristicosCTRL = async (req: Request, res: Response) => {
         const lugar = response.data[0] ?? []; // Primera tabla: Lugares turísticos
         const imagenes = response.data[1] ?? []; // Segunda tabla: Imágenes
         let comentarios = response.data[2] ?? []; // Tercera tabla: Comentarios
+        let imagenesUsuarios = [] as any
+
 
 
         // Convertir `FotosComentarios` de JSON string a array de objetos
@@ -16,6 +18,7 @@ const infoLugarTuristicosCTRL = async (req: Request, res: Response) => {
             if (comentario.FotosComentarios) {
                 try {
                     comentario.FotosComentarios = JSON.parse(comentario.FotosComentarios);
+                    imagenesUsuarios = imagenesUsuarios.concat(comentario.FotosComentarios)
                 } catch (error) {
                     comentario.FotosComentarios = []; // Si hay un error, asignar un array vacío
                 }
@@ -32,6 +35,8 @@ const infoLugarTuristicosCTRL = async (req: Request, res: Response) => {
             lugar,
             imagenes,
             comentarios,
+            imagenesUsuarios
+            // imagenesUsuarios,
         });
         return;
     }

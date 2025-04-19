@@ -63,7 +63,7 @@ const ChatInput = () => {
     };
     return (
         <View
-            className=""
+            className="absolute left-0 right-0 bottom-0"
         >
             {/* Mostrar imagen seleccionada */}
             {selectedImage && (

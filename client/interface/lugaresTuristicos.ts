@@ -64,10 +64,8 @@ export interface LugarDetalle {
     Region: string;
     Categoria: string;
 }
-interface FotosComentarios {
 
-}
-interface FotoComentario {
+export interface FotoComentario {
     FotoComentario: string;
     FechaFoto: string;
   }
@@ -83,7 +81,7 @@ export interface Comentario  {
     FechaValoracion: string | null; 
     FotosComentarios: FotoComentario[];
   };
-  
+
 
 export interface ApiResponseLugarTuristico {
     status: number;
@@ -91,5 +89,6 @@ export interface ApiResponseLugarTuristico {
     message: string;
     lugar: LugarDetalle[];
     imagenes: ImagenLugar[];
-    comentarios?: Comentario[] | [];
+    comentarios: Comentario[];
+    imagenesUsuarios: FotoComentario[]
 }

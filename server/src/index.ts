@@ -6,6 +6,7 @@ import { routerCategoriasLugares } from "./routers/categoriasLugares";
 import { routerLugaresTuristicos } from "./routers/lugaresTuristicos";
 import { routerInfoLugarTuristico } from "./routers/infoLugarTuristico";
 import { routerComentarios } from "./routers/comentariosRouter";
+import routerImages from "./routers/imageRoutes";
 
 const app = express();
 
@@ -29,6 +30,8 @@ app.use((req, res, next) => {
 
 
 
+app.use('/uploads', express.static('uploads'));
+
 // 5. Routers
 app.use("/api", router);
 app.use("/api", routerRegiones);
@@ -36,6 +39,10 @@ app.use("/api", routerCategoriasLugares);
 app.use("/api", routerLugaresTuristicos);
 app.use("/api", routerInfoLugarTuristico);
 app.use("/api", routerComentarios);
+// Configurar middleware para archivos estáticos si es necesario
+
+// Rutas
+app.use('/api', routerImages);
 
 
 

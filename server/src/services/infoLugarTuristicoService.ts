@@ -2,6 +2,42 @@ import { conexion } from "../config/conexon"
 import sql from 'mssql'
 
 type ServiceError = unknown;
+
+
+
+interface Lugar {
+    LugarID: number;
+    NombreLugar: string;
+    Descripcion: string;
+    Longitud: number;
+    PrecioEntrada: number;
+    HorarioApertura: string;
+    Destacado: boolean;
+    Region: string;
+    Categoria: string;
+}
+
+interface Imagen {
+    id: number;
+    Imagen: string;
+}
+
+interface FotoComentario {
+    FotoComentario: string;
+    FechaFoto: string;
+}
+
+interface Comentario {
+    IdComentario: number;
+    Comentario: string;
+    FechaComentario: string;
+    IdUsuario: number;
+    Usuario: string;
+    FotoPerfil: string;
+    Valoracion: number | null;
+    FechaValoracion: string | null;
+    FotosComentarios: FotoComentario[];
+}
 interface ServiceResponse {
     status: number,
     succes: boolean,
@@ -10,6 +46,7 @@ interface ServiceResponse {
     data?: any[];
 
 }
+
 const infolugaresTuristico = async (idLugarTuristico: number):Promise<ServiceResponse> => {
     let pool: sql.ConnectionPool | undefined
     try {
