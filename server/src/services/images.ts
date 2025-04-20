@@ -1,22 +1,25 @@
 import { conexion } from "../config/conexon";
 import sql from 'mssql'
 export interface Image {
-  id?: number;
-  public_id: string;
-  url: string;
-  created_at?: Date;
+  // id?: number;
+  Cod_comentario: number,
+  Cod_usuario: number,
+  // public_id: string;
+  URLImagen: string;
+  // created_at?: Date;
 }
 
 export const createImage = async (image: Image): Promise<Image> => {
   try {
     const pool = await conexion();
     const result = await pool.request()
-      .input('public_id', sql.VarChar, image.public_id)
-      .input('url', sql.VarChar, image.url)
+      .input('Cod_comentario', sql.Int, image.Cod_comentario)
+      .input('Cod_usuario', sql.Int, image.Cod_usuario)
+      .input('URLImagen', sql.VarChar, image.URLImagen)
       .query(`
-        INSERT INTO Images (public_id, url)
+        INSERT INTO FotosComentarios (Cod_comentario,Cod_usuario,URLImagen)
         OUTPUT INSERTED.*
-        VALUES (@public_id, @url)
+        VALUES (@Cod_comentario, @Cod_usuario, @URLImagen)
       `);
     return result.recordset[0];
   } catch (error) {

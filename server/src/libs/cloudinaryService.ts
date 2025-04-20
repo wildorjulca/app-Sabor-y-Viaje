@@ -4,7 +4,7 @@ import { UploadApiResponse } from 'cloudinary';
 export const uploadImage = async (filePath: string): Promise<UploadApiResponse> => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
-      folder: 'my_app_images',
+      folder: 'toursApp',
       resource_type: 'auto'
     });
     return result;

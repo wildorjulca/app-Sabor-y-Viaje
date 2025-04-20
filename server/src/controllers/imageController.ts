@@ -12,24 +12,25 @@ export const uploadImageController = async (req: Request, res: Response) => {
       res.status(400).json({ message: 'No file uploaded' });
       return
     }
-
     const filePath = path.join(__dirname, '../../uploads', req.file.filename);
-    
+
     // Subir a Cloudinary
-    const cloudinaryResult = await uploadImage(filePath);
-    
+    // const cloudinaryResult = await uploadImage(filePath);
+    // console.log(cloudinaryResult)
+
     // Guardar en la base de datos
-    const imageRecord = await createImage({
-      public_id: cloudinaryResult.public_id,
-      url: cloudinaryResult.secure_url
-    });
+    // const imageRecord = await createImage({
+    //   public_id: cloudinaryResult.public_id,
+    //   url: cloudinaryResult.secure_url
+    // });
 
     // Eliminar el archivo temporal
     fs.unlinkSync(filePath);
 
     res.status(201).json({
       message: 'Image uploaded successfully',
-      image: imageRecord
+      // image: cloudinaryResult
+      filePath
     });
   } catch (error) {
     console.error('Error in uploadImageController:', error);
